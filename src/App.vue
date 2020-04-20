@@ -2,7 +2,7 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
-
+    <CreateUser/>
     <hr>
 
     <div class="fondo">
@@ -25,6 +25,7 @@ const apiService = new APIService();
 
 
 import HelloWorld from './components/HelloWorld.vue'
+import CreateUser from './components/CreateUser.vue'
 
 export default {
   name: 'App',
@@ -52,7 +53,8 @@ export default {
     
   },
   components: {
-    HelloWorld
+    HelloWorld,
+    CreateUser
   }
 
   
