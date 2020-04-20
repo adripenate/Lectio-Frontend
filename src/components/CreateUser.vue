@@ -95,7 +95,7 @@
           role: null,
           additionalData: ''
         },
-        roles: [{ text: 'Select One', value: null }, 'Student', 'Teacher'],
+        roles: [{ text: 'Select One', value: null }, 'Student', 'Librarian', 'Administrator'],
         show: true
       }
     },
