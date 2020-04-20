@@ -8,7 +8,7 @@
             <b-col md="6">
                 <b-form-input
                     id="name-field"
-                    v-model="form.name"
+                    v-model="form.firstName"
                     required
                     placeholder="Enter name"
                 ></b-form-input>
@@ -20,7 +20,7 @@
             <b-col md="6">
                 <b-form-input
                     id="surname-field"
-                    v-model="form.surname"
+                    v-model="form.lastName"
                     required
                     placeholder="Enter surname"
                 ></b-form-input>
@@ -37,6 +37,19 @@
                     type="email"
                     required
                     placeholder="Enter email"
+                ></b-form-input>
+            </b-col>
+        </b-row>
+
+        <b-row class="mt-2"> 
+            <b-col md="2" offset="2"><label for="password-field">Password:</label></b-col>
+            <b-col md="6">
+                <b-form-input
+                    id="password-field"
+                    v-model="form.password"
+                    type="password"
+                    required
+                    placeholder="Enter password"
                 ></b-form-input>
             </b-col>
         </b-row>
@@ -66,11 +79,22 @@
             <b-col md="6">
                 <b-form-textarea
                     id="additional-data-field"
-                    v-model="form.additionalData"
+                    v-model="form.additional"
                     placeholder="Enter user additional data..."
                     rows="3"
                     max-rows="6"
                 ></b-form-textarea>
+            </b-col>
+        </b-row>
+
+        <b-row class="mt-2"> 
+            <b-col md="2" offset="2"><label for="photo-field">Photo:</label></b-col>
+            <b-col md="6">
+                <b-form-file
+                    id="photo-field"
+                    v-model="form.photo"
+                    type="file"
+                ></b-form-file>
             </b-col>
         </b-row>
 
@@ -89,11 +113,13 @@
     data() {
       return {
         form: {
-          name: '',
-          surname: '',
+          firstName: '',
+          lastName: '',
           email: '',
+          password: '',
+          photo: '',
           role: null,
-          additionalData: ''
+          additional: ''
         },
         roles: [{ text: 'Select One', value: null }, 'Student', 'Librarian', 'Administrator'],
         show: true
@@ -111,16 +137,19 @@
       onSubmit(evt) {
         evt.preventDefault()
         const apiService = new APIService();
+        console.log(JSON.stringify(this.form));
         apiService.createUser(JSON.stringify(this.form));
       },
       onReset(evt) {
         evt.preventDefault()
         // Reset our form values
-        this.form.name = ''
-        this.form.surname = ''
+        this.form.firstName = ''
+        this.form.lastName = ''
         this.form.email = ''
+        this.form.password = '',
+        this.form.photo = '',
         this.form.role = null
-        this.form.additionalData = ''
+        this.form.additional = ''
         // Trick to reset/clear native browser form validation state
         this.show = false
         this.$nextTick(() => {
