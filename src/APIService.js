@@ -4,8 +4,11 @@ const API_URL = 'http://localhost:8080';
 
 export class APIService {
 
-    constructor(){
+    constructor(){}
 
+    createUser(user){
+        const url = `${API_URL}/users`;
+        return axios.put(url, user);
     }
 
     getSomething() {

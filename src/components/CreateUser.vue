@@ -1,9 +1,11 @@
 <template>
-    <b-container class="bv-example-row">
-        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+<div class="hello">
+    <b-container class="bv-row">
+        <h1 class="title">Create a new user</h1>
+        <b-form @submit="onSubmit" @reset="onReset" v-if="show" header='Create a new user'>
         <b-row>
-            <b-col md="2"><label for="name-field">Name:</label></b-col>
-            <b-col>
+            <b-col md="2" offset="2"><label for="name-field">Name:</label></b-col>
+            <b-col md="6">
                 <b-form-input
                     id="name-field"
                     v-model="form.name"
@@ -14,8 +16,8 @@
         </b-row>
 
         <b-row class="mt-2">
-            <b-col md="2"><label for="surname-field">Surname:</label></b-col>
-            <b-col>
+            <b-col md="2" offset="2"><label for="surname-field">Surname:</label></b-col>
+            <b-col md="6">
                 <b-form-input
                     id="surname-field"
                     v-model="form.surname"
@@ -26,8 +28,8 @@
         </b-row>
 
         <b-row class="mt-2"> 
-            <b-col md="2"><label for="email-field">Email address:</label></b-col>
-            <b-col>
+            <b-col md="2" offset="2"><label for="email-field">Email address:</label></b-col>
+            <b-col md="6">
                 <b-form-input
                     id="email-field"
                     v-model="form.email"
@@ -40,7 +42,7 @@
         </b-row>
 
         <b-row>
-            <b-col md="6">
+            <b-col md="6" offset="2">
                 <b-form-invalid-feedback :state="emailValidation">
                     Please enter a valid email
                 </b-form-invalid-feedback>
@@ -48,8 +50,8 @@
         </b-row>
 
         <b-row class="mt-2"> 
-            <b-col md="2"><label for="roles-field">Role:</label></b-col>
-            <b-col>
+            <b-col md="2" offset="2"><label for="roles-field">Role:</label></b-col>
+            <b-col md="6">
                 <b-form-select
                     id="role-field"
                     v-model="form.role"
@@ -60,8 +62,8 @@
         </b-row>
 
         <b-row class="mt-2">
-            <b-col md="2"><label for="additional-data-field">Additional data:</label></b-col>
-            <b-col>
+            <b-col md="2" offset="2"><label for="additional-data-field">Additional data:</label></b-col>
+            <b-col md="6">
                 <b-form-textarea
                     id="additional-data-field"
                     v-model="form.additionalData"
@@ -72,19 +74,17 @@
             </b-col>
         </b-row>
 
-        <b-row class="mt-2">
-            <b-col md="6"><b-button type="submit" variant="primary">Submit</b-button></b-col>
-            <b-col md="6"><b-button type="reset" variant="danger">Reset</b-button></b-col>
+        <b-row class="mt-2 justify-content-md-center" >
+            <b-col md="4"><b-button type="submit" variant="primary">Submit</b-button><b-button type="reset" variant="danger">Reset</b-button></b-col>
         </b-row>
     
     </b-form>
-    <b-card class="mt-3" header="Form Data Result">
-      <pre class="m-0">{{ form }}</pre>
-    </b-card>
 </b-container>
+</div>
 </template>
 
 <script>
+  import {APIService} from '../APIService';
   export default {
     data() {
       return {
@@ -110,7 +110,8 @@
     methods: {
       onSubmit(evt) {
         evt.preventDefault()
-        alert(JSON.stringify(this.form))
+        const apiService = new APIService();
+        apiService.createUser(JSON.stringify(this.form));
       },
       onReset(evt) {
         evt.preventDefault()
@@ -129,3 +130,9 @@
     }
   }
 </script>
+
+<style>
+.title{
+    padding: 5vh;
+}
+</style>
