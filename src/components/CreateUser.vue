@@ -41,6 +41,14 @@
             </b-col>
         </b-row>
 
+        <b-row>
+            <b-col md="6" offset="2">
+                <b-form-invalid-feedback :state="emailValidation">
+                    Please enter a valid email
+                </b-form-invalid-feedback>
+            </b-col>
+        </b-row>
+
         <b-row class="mt-2"> 
             <b-col md="2" offset="2"><label for="password-field">Password:</label></b-col>
             <b-col md="6">
@@ -51,14 +59,6 @@
                     required
                     placeholder="Enter password"
                 ></b-form-input>
-            </b-col>
-        </b-row>
-
-        <b-row>
-            <b-col md="6" offset="2">
-                <b-form-invalid-feedback :state="emailValidation">
-                    Please enter a valid email
-                </b-form-invalid-feedback>
             </b-col>
         </b-row>
 
@@ -128,8 +128,11 @@
 
     computed:{
         emailValidation() {
-            var emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return emailRegex.test(this.form.email);
+            if(this.form.email != ''){
+                var emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return emailRegex.test(this.form.email);
+            }
+            return null;
         }
     },
 
