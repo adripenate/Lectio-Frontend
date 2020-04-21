@@ -1,11 +1,19 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'http://localhost:8080/api';
+const headers = {
+    'Content-Type': 'application/json'
+  }
 
 export class APIService {
 
-    constructor(){
+    constructor(){}
 
+    createUser(user){
+        const url = `${API_URL}/users`;
+        return axios.post(url, user, {
+            headers: headers
+        });
     }
 
     getSomething() {
