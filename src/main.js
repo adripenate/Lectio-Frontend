@@ -60,5 +60,5 @@ router.beforeEach((to, from, next) => {
  
 new Vue({
   render: h => h(App),
-  router
+  router,
 }).$mount('#app')

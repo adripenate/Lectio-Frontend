@@ -3,7 +3,7 @@
     <b-container>
         <h1 class="title">Registered users</h1>
         <div> 
-             <b-table :items="items" :fields="fields" striped responsive="sm">
+             <b-table :items="items" :fields="fields" striped responsive="sm" v-if="showTable">
                 <template v-slot:cell(options)="row">
                     <b-button pill size="sm" @click="row.toggleDetails" class="mr-2">
                     <b-icon icon="pencil-square"></b-icon> Edit
@@ -13,6 +13,7 @@
                     </b-button>
                 </template>
             </b-table>
+            {{text}}
         </div>
     </b-container>
 </div>
@@ -23,19 +24,29 @@
   export default {
     data() {
       return {
-        items: this.getUserList(),
+        items: [],
+        showTable : false,
+        text: 'No registered users',
         fields: ['id', 'firstName', 'lastName', 'email', 'rol', 'additional', 'options']
-        
       }
     },
 
     computed:{
+
+    }, 
+    mounted() {
+      this.getUsers();
     },
 
     methods: {
-        getUserList(){
-            const apiService = new APIService();
-            return apiService.getUsers();
+        getUsers() {
+          var apiService = new APIService();
+          apiService.getUsers().then(result => {
+            this.items = result;
+            if (this.items.length != 0){
+              this.showTable = true;
+              this.text = '';
+            }});
         }
     }
   }
