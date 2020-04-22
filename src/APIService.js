@@ -26,4 +26,14 @@ export class APIService {
         return await axios.get(url).then((response) => response.data).catch( error => { console.log(error); });
     }
 
+    async deleteUser(id) {
+        const url = `${API_URL}/users/`;
+        return await axios.delete(url + id, {
+            headers: headers
+        }).catch( error => { console.log(error); });
+    }
+
+
+
+
 }
