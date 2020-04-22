@@ -7,6 +7,7 @@ import VueRouter from 'vue-router'
 
 import CreateUser from './components/CreateUser.vue'
 import UserList from './components/UserList.vue'
+import EditUser from './components/EditUser.vue'
  
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
@@ -17,6 +18,7 @@ Vue.config.productionTip = false
 const router = new VueRouter({
   routes: [
     { path: '/createUser', component: CreateUser, meta: {title: "Lectio - Create new user"} },
+    { path: '/user/edit/:id', component: EditUser, meta: {title: "Lectio - Edit user"} },
     { path: '/', component: UserList, meta: {title: "Lectio - Home"} },
   ]
 })

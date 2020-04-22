@@ -5,7 +5,7 @@
         <div> 
              <b-table :items="items" :fields="fields" striped responsive="sm" v-if="showTable">
                 <template v-slot:cell(options)="row">
-                    <b-button pill size="sm" @click="row.toggleDetails" class="mr-2">
+                    <b-button pill size="sm" :to="`/user/edit/${row.item.id}`" class="mr-2">
                     <b-icon icon="pencil-square"></b-icon> Edit
                     </b-button>
                     <b-button variant="danger" pill size="sm" @click="setUserAndShowModal(row.item, row.index, $event.target)" class="mr-2" ref="btnShow">

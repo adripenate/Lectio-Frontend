@@ -16,6 +16,13 @@ export class APIService {
         });
     }
 
+    async updateUser(user){
+        const url = `${API_URL}/users`;
+        return await axios.put(url, user, {
+            headers: headers
+        });
+    }
+
     getSomething() {
         const url = `${API_URL}/`;
         return axios.get(url).then(response => response.data);
@@ -24,6 +31,11 @@ export class APIService {
     async getUsers() {
         const url = `${API_URL}/users`;
         return await axios.get(url).then((response) => response.data).catch( error => { console.log(error); });
+    }
+
+    async getUser(id) {
+        const url = `${API_URL}/users/`;
+        return await axios.get(url + id).then((response) => response.data).catch( error => { console.log(error); });
     }
 
     async deleteUser(id) {
