@@ -29,8 +29,8 @@
           </template>
         </b-modal>
 
-        <b-modal id="modal-multi-2" title="Second Modal" ok-only>
-          <p class="my-2">{{ error }}</p>
+        <b-modal id="modal-multi-2" title="Delete user" ok-only>
+          <p class="my-2">{{ msg }}</p>
         </b-modal>
     </b-container>
 </div>
@@ -44,7 +44,7 @@
         items: [],
         showTable : false,
         text: 'No registered users',
-        fields: ['id', 'firstName', 'lastName', 'email', 'rol', 'additional', 'options'],
+        fields: ['id', 'firstName', 'lastName', 'email', 'role', 'additional', 'options'],
         itemIndex : -1,
         infoModal: {
           id: 'info-modal',

@@ -98,12 +98,12 @@
             </b-col>
         </b-row>
 
-        <b-row class="mt-2 justify-content-md-center" >
+        <b-row class="mt-4 justify-content-md-center" >
             <b-col md="4"><b-button type="submit" variant="primary">Submit</b-button><b-button type="reset" variant="danger">Reset</b-button></b-col>
         </b-row>
 
-        <b-alert variant="success" show v-if="successNewUser">New user successful created!</b-alert>
-        <b-alert variant="danger" show v-if="error">An error has ocurred!</b-alert>
+        <b-alert class="m-5" variant="success" show v-if="successNewUser">New user successful created!</b-alert>
+        <b-alert class="m-5" variant="danger" show v-if="error">An error has ocurred!</b-alert>
     </b-form>
 </b-container>
 </div>
@@ -115,13 +115,13 @@
     data() {
       return {
         form: {
-          firstName: '',
-          lastName: '',
-          email: '',
-          password: '',
-          photo: '',
-          role: null,
-          additional: ''
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          photo: "",
+          role: [],
+          additional: ""
         },
         successNewUser : false,
         error : false,
@@ -157,12 +157,12 @@
       onReset(evt) {
         evt.preventDefault()
         // Reset our form values
-        this.form.firstName = ''
-        this.form.lastName = ''
-        this.form.email = ''
+        this.form.firstName = ""
+        this.form.lastName = ""
+        this.form.email = ""
         this.form.password = '',
         this.form.photo = '',
-        this.form.role = null
+        this.form.role = []
         this.form.additional = ''
         // Trick to reset/clear native browser form validation state
         this.show = false

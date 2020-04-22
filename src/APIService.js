@@ -16,9 +16,9 @@ export class APIService {
         });
     }
 
-    async updateUser(user){
-        const url = `${API_URL}/users`;
-        return await axios.put(url, user, {
+    async updateUser(id,user){
+        const url = `${API_URL}/users/`;
+        return await axios.put(url+id, user, {
             headers: headers
         });
     }
@@ -35,7 +35,7 @@ export class APIService {
 
     async getUser(id) {
         const url = `${API_URL}/users/`;
-        return await axios.get(url + id).then((response) => response.data).catch( error => { console.log(error); });
+        return await axios.get(url + id).then((response) => response).catch( error => { console.log(error); });
     }
 
     async deleteUser(id) {
