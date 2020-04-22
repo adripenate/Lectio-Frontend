@@ -9,9 +9,9 @@ export class APIService {
 
     constructor(){}
 
-    createUser(user){
+    async createUser(user){
         const url = `${API_URL}/users`;
-        return axios.post(url, user, {
+        return await axios.post(url, user, {
             headers: headers
         });
     }

@@ -101,7 +101,9 @@
         <b-row class="mt-2 justify-content-md-center" >
             <b-col md="4"><b-button type="submit" variant="primary">Submit</b-button><b-button type="reset" variant="danger">Reset</b-button></b-col>
         </b-row>
-    
+
+        <b-alert variant="success" show v-if="successNewUser">New user successful created!</b-alert>
+        <b-alert variant="danger" show v-if="error">An error has ocurred!</b-alert>
     </b-form>
 </b-container>
 </div>
@@ -121,6 +123,8 @@
           role: null,
           additional: ''
         },
+        successNewUser : false,
+        error : false,
         roles: [{ text: 'Select One', value: null }, 'Student', 'Librarian', 'Administrator'],
         show: true
       }
@@ -140,8 +144,15 @@
       onSubmit(evt) {
         evt.preventDefault()
         const apiService = new APIService();
-        console.log(JSON.stringify(this.form));
-        apiService.createUser(JSON.stringify(this.form));
+        var data = apiService.createUser(JSON.stringify(this.form));
+        data.then(result => {
+            if (result.status == 201) {
+                this.successNewUser = true;
+                this.onReset();
+            } else {
+                this.error = true;
+            }})
+        
       },
       onReset(evt) {
         evt.preventDefault()
