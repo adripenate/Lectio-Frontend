@@ -120,12 +120,12 @@
           email: "",
           password: "",
           photo: "",
-          role: [],
+          role: null,
           additional: ""
         },
         successNewUser : false,
         error : false,
-        roles: [{ text: 'Select One', value: null }, 'Student', 'Librarian', 'Administrator'],
+        roles: [{ text: 'Select One', value: null, disabled : 'true' }, 'Student', 'Librarian', 'Administrator'],
         show: true
       }
     },
@@ -141,8 +141,7 @@
     },
 
     methods: {
-      onSubmit(evt) {
-        evt.preventDefault()
+      onSubmit() {
         const apiService = new APIService();
         var data = apiService.createUser(JSON.stringify(this.form));
         data.then(result => {
@@ -151,18 +150,17 @@
                 this.onReset();
             } else {
                 this.error = true;
-            }})
+            }}).catch(error => alert(error))
         
       },
-      onReset(evt) {
-        evt.preventDefault()
+      onReset() {
         // Reset our form values
         this.form.firstName = ""
         this.form.lastName = ""
         this.form.email = ""
         this.form.password = '',
         this.form.photo = '',
-        this.form.role = []
+        this.form.role = null
         this.form.additional = ''
         // Trick to reset/clear native browser form validation state
         this.show = false

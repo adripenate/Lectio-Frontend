@@ -131,8 +131,7 @@
         this.getUserData();
     },
     methods: {
-        onSubmit(evt) {
-            evt.preventDefault()
+        onSubmit() {
             const apiService = new APIService();
             var data = apiService.updateUser(this.$route.params.id,JSON.stringify(this.form));
             data.then(result => {
@@ -140,7 +139,7 @@
                     this.successUptatedUser = true;
                 } else {
                     this.error = true;
-                }})
+                }}).catch(error => alert(error))
             
         },
         getUserData(){
