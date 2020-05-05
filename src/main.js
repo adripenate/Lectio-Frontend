@@ -10,6 +10,7 @@ import CreateUser from './components/CreateUser.vue'
 import UserList from './components/UserList.vue'
 import EditUser from './components/EditUser.vue'
 import Login from './components/Login.vue'
+import AddBook from './components/AddBook.vue'
  
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
@@ -20,10 +21,12 @@ Vue.config.productionTip = false
 
 const router = new VueRouter({
   routes: [
+    {path: '/', redirect: '/userList'},
     { path: '/createUser', component: CreateUser, meta: {title: "Lectio - Create new user"} },
     { path: '/user/edit/:id', component: EditUser, meta: {title: "Lectio - Edit user"} },
     { path: '/login', component: Login, name : "login", meta: {title: "Lectio - Login"} },
-    { path: '/', component: UserList, name : "userList", meta: {title: "Lectio - Home"} },
+    { path: '/addNewBook', component: AddBook, name : "addBook", meta: {title: "Lectio - Add new book"} },
+    { path: '/userList', component: UserList, name : "userList", meta: {title: "Lectio - Home"} },
   ]
 })
 

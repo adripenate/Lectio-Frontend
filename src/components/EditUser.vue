@@ -128,6 +128,7 @@
     },
 
     mounted(){
+        this.$emit("authenticated", true);
         this.getUserData();
     },
     methods: {

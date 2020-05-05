@@ -58,8 +58,8 @@
 
     }, 
     mounted() {
+      this.$emit("authenticated", true);
       this.getUsers();
-      this.check();
     },
 
     methods: {
@@ -71,11 +71,6 @@
               this.showTable = true;
               this.text = '';
             }});
-        },
-        check() {
-          if (!this.$parent.$data.authenticated) {
-            this.$router.replace({ name: "login" });
-          } 
         },
         setUserAndShowModal(item, index, button) {
           this.itemIndex = index

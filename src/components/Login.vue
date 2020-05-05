@@ -86,10 +86,8 @@
                 this.error = true;
             }}).catch(error => alert(error))*/
         if(this.form.email == this.email && this.form.password == this.pass) {
-            this.$emit("authenticated", true);
-            this.$session.start()
+            this.$emit("login", true);
             localStorage.setItem("hola", "hola")
-            alert(localStorage.getItem("hola"))
             this.$router.replace({ name: "userList" });
             this.error = false;
         } else {

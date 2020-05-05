@@ -140,6 +140,10 @@
         }
     },
 
+    mounted(){
+        this.$emit("authenticated", true);
+    },
+
     methods: {
       onSubmit() {
         const apiService = new APIService();

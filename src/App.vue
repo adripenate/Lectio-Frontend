@@ -14,6 +14,10 @@
           <b-nav-item href="#/createUser">Crear Usuario</b-nav-item>
         </b-navbar-nav>
 
+        <b-navbar-nav>
+          <b-nav-item href="#/addNewBook">Add book</b-nav-item>
+        </b-navbar-nav>
+
         <b-navbar-nav v-if="authenticated" to="/login">
           <b-nav-item href="#/createUser">Log out</b-nav-item>
         </b-navbar-nav>
@@ -39,7 +43,7 @@
       </b-col>
   </b-row>
   </b-container>
-    <router-view @authenticated="setAuthenticated"></router-view>
+    <router-view @authenticated="isLogged" @login="setAuthenticated"></router-view>
   </div>
   
 </template>
@@ -70,6 +74,11 @@ export default {
           this.authenticated = false;
           localStorage.removeItem("hola");
           this.$router.replace({ name: "login" });
+      },
+      isLogged() {
+        if (!this.authenticated) {
+          this.$router.replace({ name: "login" });
+        } 
       }
   },
   components: {
