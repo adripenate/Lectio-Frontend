@@ -4,22 +4,26 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import VueRouter from 'vue-router'
+import VueSession from 'vue-session'
 
 import CreateUser from './components/CreateUser.vue'
 import UserList from './components/UserList.vue'
 import EditUser from './components/EditUser.vue'
+import Login from './components/Login.vue'
  
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
- 
+
+Vue.use(VueSession)
 Vue.config.productionTip = false
 
 const router = new VueRouter({
   routes: [
     { path: '/createUser', component: CreateUser, meta: {title: "Lectio - Create new user"} },
     { path: '/user/edit/:id', component: EditUser, meta: {title: "Lectio - Edit user"} },
-    { path: '/', component: UserList, meta: {title: "Lectio - Home"} },
+    { path: '/login', component: Login, name : "login", meta: {title: "Lectio - Login"} },
+    { path: '/', component: UserList, name : "userList", meta: {title: "Lectio - Home"} },
   ]
 })
 
@@ -62,5 +66,8 @@ router.beforeEach((to, from, next) => {
  
 new Vue({
   render: h => h(App),
+    options : {
+      persist: true
+  },
   router,
 }).$mount('#app')
