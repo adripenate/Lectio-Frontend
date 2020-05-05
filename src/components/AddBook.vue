@@ -100,6 +100,7 @@
         <b-alert class="m-5" variant="success" show v-if="successNewBook">New book successful created!</b-alert>
         <b-alert class="m-5" variant="danger" show v-if="error">An error has ocurred!</b-alert>
     </b-form>
+    {{datos}}
 </b-container>
 </div>
 </template>
@@ -118,6 +119,7 @@
           genre: null,
           synopsis: ""
         },
+        datos: "",
         successNewBook : false,
         error : false,
         genres: [{ text: 'Select One', value: null, disabled : 'true' }, 'Action', "Fantasy", "Young adult", "Adventure", 
@@ -135,7 +137,7 @@
       onSubmit() {
         //const apiService = new APIService();
         //var data = apiService.createUser(JSON.stringify(this.form));
-        alert(JSON.stringify(this.form));
+        this.datos = JSON.stringify(this.form);
         /*data.then(result => {
             if (result.status == 201) {
                 this.successNewBook = true;

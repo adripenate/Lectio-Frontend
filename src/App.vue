@@ -18,13 +18,14 @@
           <b-nav-item href="#/addNewBook">Add book</b-nav-item>
         </b-navbar-nav>
 
-        <b-navbar-nav v-if="authenticated" to="/login">
-          <b-nav-item href="#/createUser">Log out</b-nav-item>
+        <b-navbar-nav>
+          <b-nav-item href="#/books">Catalogue</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav>
           <b-nav-item href="#/">User List</b-nav-item>
         </b-navbar-nav> 
+
       </div>
       <b-navbar-nav class="ml-auto">
         
@@ -35,7 +36,6 @@
             <em>{{ authenticated }}</em>
           </template>
           <b-dropdown-item href="#" v-on:click="logout()">Logout</b-dropdown-item>
-          <b-dropdown-item href="#">Sign Out</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>
