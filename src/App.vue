@@ -4,26 +4,26 @@
   <b-row>
       <b-col>
   <b-navbar toggleable="lg" type="dark" variant="info">
-    <b-navbar-brand href="#/">Lectio</b-navbar-brand>
+    <b-navbar-brand href="/">Lectio</b-navbar-brand>
  
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
  
     <b-collapse id="nav-collapse" is-nav>
       <div v-if="authenticated" class="navOptions">
         <b-navbar-nav>
-          <b-nav-item href="#/createUser">Crear Usuario</b-nav-item>
+          <b-nav-item href="/createUser">Crear Usuario</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav>
-          <b-nav-item href="#/addNewBook">Add book</b-nav-item>
+          <b-nav-item href="/addNewBook">Add book</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav>
-          <b-nav-item href="#/books">Catalogue</b-nav-item>
+          <b-nav-item href="/books">Catalogue</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav>
-          <b-nav-item href="#/">User List</b-nav-item>
+          <b-nav-item href="/userList">User List</b-nav-item>
         </b-navbar-nav> 
 
       </div>
@@ -60,10 +60,10 @@ export default {
   },
   mounted() {
       if (localStorage.getItem("hola") == null) {
-          this.$router.replace({ name: "login" });
+          //this.$router.replace({ name: "login" });
       } else {
-        this.$router.replace({ name: "userList" });
         this.authenticated = true;
+        
       }
   },
   methods: {
@@ -76,7 +76,7 @@ export default {
           this.$router.replace({ name: "login" });
       },
       isLogged() {
-        if (!this.authenticated) {
+        if (localStorage.getItem("hola") == null && !this.authenticated) {
           this.$router.replace({ name: "login" });
         } 
       }
