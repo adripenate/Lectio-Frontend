@@ -55,7 +55,6 @@
 </script>
 
 <style>
-
 .book-pagination {
     margin-top: 50px;
     color:  black
