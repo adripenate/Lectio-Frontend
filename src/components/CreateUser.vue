@@ -145,7 +145,8 @@
     },
 
     methods: {
-      onSubmit() {
+      onSubmit(e) {
+        e.preventDefault();
         const apiService = new APIService();
         var data = apiService.createUser(JSON.stringify(this.form));
         data.then(result => {

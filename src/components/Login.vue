@@ -2,7 +2,7 @@
 <div class="hello">
     <b-container class="bv-row">
         <h1 class="title">Login</h1>
-        <b-form @submit="onSubmit" header='Login'>
+        <b-form @submit="onSubmit" @reset="onReset" header='Login'>
 
         <b-row class="mt-2"> 
             <b-col md="2" offset="2"><label for="email-field">Email address:</label></b-col>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-  //import {APIService} from '../APIService';
+  import {APIService} from '../APIService';
   export default {
     data() {
       return {
@@ -75,29 +75,21 @@
     },
 
     methods: {
-      onSubmit() {
-        /*const apiService = new APIService();
-        var data = apiService.createUser(JSON.stringify(this.form));
+      onSubmit(e) {
+        e.preventDefault();
+        const apiService = new APIService();
+        var data = apiService.login(JSON.stringify(this.form));
         data.then(result => {
-            if (result.status == 201) {
-                this.successNewUser = true;
-                this.onReset();
+            if (result.status == 200) {
+                this.$emit("login", true);
+                localStorage.setItem("token", result.headers.authorization);
+                localStorage.setItem("hola", "hola");
+                this.$router.replace({ name: "userList" });
+                this.error = false;
             } else {
                 this.error = true;
-            }}).catch(error => alert(error))*/
-        if(this.form.email == this.email && this.form.password == this.pass) {
-            this.$emit("login", true);
-            localStorage.setItem("hola", "hola")
-            this.$router.replace({ name: "userList" });
-            this.error = false;
-        } else {
-            this.error = true;
+            }}).catch(error => alert(error))
             this.onReset();
-            console.log("The username and / or password is incorrect");
-        }
-        
-        
-        
       },
       onReset() {
         this.form.email = ""
