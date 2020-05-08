@@ -10,28 +10,40 @@
  
     <b-collapse id="nav-collapse" is-nav>
       <div v-if="authenticated" class="navOptions">
-        <b-navbar-nav>
-          <b-nav-item href="/createUser">Crear Usuario</b-nav-item>
-        </b-navbar-nav>
+        <div v-if="this.role =='Administrator'" class="navOptions">
+          <b-navbar-nav>
+            <b-nav-item href="/createUser">Crear Usuario</b-nav-item>
+          </b-navbar-nav>
+          
+          <b-navbar-nav>
+            <b-nav-item href="/userList">User List</b-nav-item>
+          </b-navbar-nav> 
+        </div>
+        
+        <div v-if="this.role != 'Administrator'" class="navOptions">
+          
+          <div v-if="this.role =='Librarian'" class="navOptions">
+            <b-navbar-nav>
+              <b-nav-item href="/addNewBook">Add book</b-nav-item>
+            </b-navbar-nav>
+          </div>
 
-        <b-navbar-nav>
-          <b-nav-item href="/addNewBook">Add book</b-nav-item>
-        </b-navbar-nav>
+          <b-navbar-nav>
+            <b-nav-item href="/books">Catalogue</b-nav-item>
+          </b-navbar-nav>
 
-        <b-navbar-nav>
-          <b-nav-item href="/books">Catalogue</b-nav-item>
-        </b-navbar-nav>
-
-        <b-navbar-nav>
-          <b-nav-item href="/userList">User List</b-nav-item>
-        </b-navbar-nav> 
-
+          <div v-if="this.role =='Student'">
+            <b-navbar-nav>
+              <b-nav-item href="/lists">My lists</b-nav-item>
+            </b-navbar-nav>
+          </div>
+          
+        </div>
       </div>
       <b-navbar-nav class="ml-auto">
         
  
         <b-nav-item-dropdown right>
-          <!-- Using 'button-content' slot -->
           <template v-slot:button-content>
             <em>{{ authenticated }}</em>
           </template>
@@ -45,44 +57,51 @@
   </b-container>
     <router-view @authenticated="isLogged" @login="setAuthenticated"></router-view>
   </div>
-  
 </template>
 
 <script>
-
-
 export default {
   name: 'App',
   data() {
       return {
-          authenticated: false
+          authenticated: false,
+          role: ""
       }
   },
   mounted() {
-      if (localStorage.getItem("hola") == null) {
-          //this.$router.replace({ name: "login" });
+      if (localStorage.getItem("userInfo") != null) {
+          this.authenticated = true;
+          this.role = JSON.parse(localStorage.getItem("userInfo")).role;
       } else {
-        this.authenticated = true;
-        
+        this.authenticated = false;
       }
   },
   methods: {
       setAuthenticated(status) {
           this.authenticated = status;
+          this.goToHome();
       },
       logout() {
           this.authenticated = false;
-          localStorage.removeItem("hola");
+          localStorage.removeItem("userInfo");
           this.$router.replace({ name: "login" });
       },
       isLogged() {
-        if (localStorage.getItem("hola") == null && !this.authenticated) {
+        if (localStorage.getItem("userInfo") == null && !this.authenticated) {
           this.$router.replace({ name: "login" });
         } 
+      },
+      goToHome(){
+          var role = JSON.parse(localStorage.getItem("userInfo")).role;
+          alert(role)
+          if(role == "Student"){
+            this.$router.replace({ name: "catalogue" });
+          }else if(role == "Administrator"){
+            this.$router.replace({ name: "userList" });
+          }else{
+            this.$router.replace({ name: "addBook" });
+          }
       }
-  },
-  components: {
-
   }
 }
 </script>
@@ -95,7 +114,6 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-
 .navOptions {
   display: inherit;
 }

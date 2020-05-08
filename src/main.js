@@ -13,6 +13,7 @@ import Login from './components/Login.vue'
 import AddBook from './components/AddBook.vue'
 import Catalogue from './components/Catalogue.vue'
 import Book from './components/Book.vue'
+import Lists from './components/Lists.vue'
  
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
@@ -30,6 +31,7 @@ const router = new VueRouter({
     { path: '/login', component: Login, name : "login", meta: {title: "Lectio - Login"} },
     { path: '/addNewBook', component: AddBook, name : "addBook", meta: {title: "Lectio - Add new book"} },
     { path: '/books', component: Catalogue, name : "catalogue", meta: {title: "Lectio - Books"} },
+    { path: '/lists', component: Lists, name : "lists", meta: {title: "Lectio - Lists"} },
     { path: '/book/:id', component: Book, name : "book", meta: {title: "Lectio - Book Information"} },
     { path: '/userList', component: UserList, name : "userList", meta: {title: "Lectio - Home"} },
   ]

@@ -60,6 +60,13 @@
         form: {
           email: "",
           password: "",
+        },
+        userData: {
+            "firstName": "Josfsdfdsfdsde",
+            "lastName": "Manfdfsfdsdiue",
+            "email": "aasdasdsad@affffasdasdsadasdd.com",
+            "password": "12dd3",
+            "role": "Student"
         }
       }
     },
@@ -81,11 +88,10 @@
         var data = apiService.login(JSON.stringify(this.form));
         data.then(result => {
             if (result.status == 200) {
-                this.$emit("login", true);
                 localStorage.setItem("token", result.headers.authorization);
-                localStorage.setItem("hola", "hola");
-                this.$router.replace({ name: "userList" });
+                localStorage.setItem("userInfo", JSON.stringify(this.userData));
                 this.error = false;
+                this.$emit("login", true);
             } else {
                 this.error = true;
             }}).catch(error => alert(error))
@@ -97,6 +103,9 @@
         this.$nextTick(() => {
           this.show = true
         })
+      },
+      getUserInfo(){
+          return this.userData;
       }
     }
   }

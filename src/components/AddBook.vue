@@ -68,13 +68,15 @@
         </b-row>
 
         <b-row class="mt-2"> 
-            <b-col md="2" offset="2"><label for="genre-field">Genre:</label></b-col>
+            <b-col md="2" offset="2"><label for="genre-field">Genres:</label></b-col>
             <b-col md="6">
                 <b-form-select
                     id="genre-field"
-                    v-model="form.genre"
-                    :options="genres"
+                    v-model="form.genres"
+                    :options="genres_options"
                     required
+                    multiple
+                    size=3
                 ></b-form-select>
             </b-col>
         </b-row>
@@ -116,13 +118,13 @@
           publisher: "",
           pages: "",
           isbn: "",
-          genre: null,
+          genres: null,
           synopsis: ""
         },
         datos: "",
         successNewBook : false,
         error : false,
-        genres: [{ text: 'Select One', value: null, disabled : 'true' }, 'Action', "Fantasy", "Young adult", "Adventure", 
+        genres_options: ['Action', "Fantasy", "Young adult", "Adventure", 
                 "Fiction", "Paranormal", "Chick-lit", "Short story", "Poetry", "Science fiction", "Romance", "Comedy", 
                 "Thriller", "Mystery", "Horror", "Non fiction", "Historical fiction"],
         show: true
@@ -155,7 +157,7 @@
         this.form.publisher = "",
         this.form.pages = "",
         this.form.isbn = "",
-        this.form.genre = null,
+        this.form.genres = null,
         this.form.synopsis = ""
         this.show = false
         this.$nextTick(() => {
