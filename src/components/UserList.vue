@@ -53,10 +53,6 @@
         msg : ''
         }
     },
-
-    computed:{
-
-    }, 
     mounted() {
       this.$emit("authenticated", true);
       this.getUsers();
