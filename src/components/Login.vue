@@ -43,7 +43,7 @@
             <b-col md="4"><b-button type="submit" variant="primary">Login</b-button></b-col>
         </b-row>
 
-        <b-alert class="m-5" variant="danger" show v-if="error">An error has ocurred!</b-alert>
+        <b-alert class="m-5" variant="danger" show v-if="error">Incorrect email or password !</b-alert>
     </b-form>
 </b-container>
 </div>
@@ -60,13 +60,6 @@
         form: {
           email: "",
           password: "",
-        },
-        userData: {
-            "firstName": "Josfsdfdsfdsde",
-            "lastName": "Manfdfsfdsdiue",
-            "email": "aasdasdsad@affffasdasdsadasdd.com",
-            "password": "12dd3",
-            "role": "Student"
         }
       }
     },
@@ -84,18 +77,28 @@
     methods: {
       onSubmit(e) {
         e.preventDefault();
-        const apiService = new APIService();
+        var apiService = new APIService();
         var data = apiService.login(JSON.stringify(this.form));
-        data.then(result => {
+        data.then((result) => {
             if (result.status == 200) {
                 localStorage.setItem("token", result.headers.authorization);
-                localStorage.setItem("userInfo", JSON.stringify(this.userData));
-                this.error = false;
-                this.$emit("login", true);
+                apiService = new APIService();
+                apiService.getUser(this.form.email).then((response) => {
+                    if (response.status == 200) {
+                        localStorage.setItem("userInfo", JSON.stringify(response.data));
+                        this.error = false;
+                        this.$emit("login", true);
+                    } else {
+                        alert("error");
+                        localStorage.removeItem("token");
+                        this.error = true;
+                    }}).catch(error => {alert(error);
+                        localStorage.removeItem("token");});
             } else {
                 this.error = true;
-            }}).catch(error => alert(error))
-            this.onReset();
+            }}).catch( error => {this.error = true;console.log(error)});
+
+        
       },
       onReset() {
         this.form.email = ""

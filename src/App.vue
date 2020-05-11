@@ -12,7 +12,7 @@
       <div v-if="authenticated" class="navOptions">
         <div v-if="this.role =='Administrator'" class="navOptions">
           <b-navbar-nav>
-            <b-nav-item href="/createUser">Crear Usuario</b-nav-item>
+            <b-nav-item href="/createUser">Create User</b-nav-item>
           </b-navbar-nav>
           
           <b-navbar-nav>
@@ -43,9 +43,9 @@
       <b-navbar-nav class="ml-auto">
         
  
-        <b-nav-item-dropdown right>
+        <b-nav-item-dropdown right  v-if="authenticated">
           <template v-slot:button-content>
-            <em>{{ authenticated }}</em>
+            <em>{{ email }}</em>
           </template>
           <b-dropdown-item href="#" v-on:click="logout()">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -55,7 +55,7 @@
       </b-col>
   </b-row>
   </b-container>
-    <router-view @authenticated="isLogged" @login="setAuthenticated"></router-view>
+    <router-view @authenticated="isLogged" @login="setAuthenticated" @role="checkRole"></router-view>
   </div>
 </template>
 
@@ -65,13 +65,14 @@ export default {
   data() {
       return {
           authenticated: false,
-          role: ""
+          role: "",
+          email : "",
       }
   },
   mounted() {
       if (localStorage.getItem("userInfo") != null) {
           this.authenticated = true;
-          this.role = JSON.parse(localStorage.getItem("userInfo")).role;
+          this.setUserData();
       } else {
         this.authenticated = false;
       }
@@ -80,6 +81,10 @@ export default {
       setAuthenticated(status) {
           this.authenticated = status;
           this.goToHome();
+      },
+      checkRole(role) {
+          if (role != this.role)
+            this.goToHome();
       },
       logout() {
           this.authenticated = false;
@@ -92,15 +97,18 @@ export default {
         } 
       },
       goToHome(){
-          var role = JSON.parse(localStorage.getItem("userInfo")).role;
-          alert(role)
-          if(role == "Student"){
+          this.setUserData();
+          if(this.role == "Student"){
             this.$router.replace({ name: "catalogue" });
-          }else if(role == "Administrator"){
+          }else if(this.role == "Administrator"){
             this.$router.replace({ name: "userList" });
           }else{
             this.$router.replace({ name: "addBook" });
           }
+      },
+      setUserData() {
+        this.role = JSON.parse(localStorage.getItem("userInfo")).role;
+        this.email = JSON.parse(localStorage.getItem("userInfo")).email;
       }
   }
 }

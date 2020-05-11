@@ -8,7 +8,7 @@
             <b-col md="6">
                 <b-form-input
                     id="name-field"
-                    v-model="form.bookName"
+                    v-model="form.title"
                     required
                     placeholder="Enter book name"
                 ></b-form-input>
@@ -100,7 +100,7 @@
         </b-row>
 
         <b-alert class="m-5" variant="success" show v-if="successNewBook">New book successful created!</b-alert>
-        <b-alert class="m-5" variant="danger" show v-if="error">An error has ocurred!</b-alert>
+        <b-alert class="m-5" variant="danger" show v-if="error">Book information incorrect or the book may already exists!</b-alert>
     </b-form>
     {{datos}}
 </b-container>
@@ -108,12 +108,12 @@
 </template>
 
 <script>
-  //import {APIService} from '../APIService';
+  import {APIBookService} from '../APIBookService';
   export default {
     data() {
       return {
         form: {
-          bookName: "",
+          title: "",
           author: "",
           publisher: "",
           pages: "",
@@ -133,25 +133,30 @@
 
     mounted(){
         this.$emit("authenticated", true);
+        this.$emit("role", "Librarian");
     },
 
     methods: {
       onSubmit(e) {
         e.preventDefault();
-        //const apiService = new APIService();
-        //var data = apiService.createUser(JSON.stringify(this.form));
-        this.datos = JSON.stringify(this.form);
-        /*data.then(result => {
+        const apiService = new APIBookService();
+        var data = apiService.createBook(JSON.stringify(this.form));
+        //this.datos = JSON.stringify(this.form);
+        data.then(result => {
             if (result.status == 201) {
                 this.successNewBook = true;
                 this.onReset();
+                this.error = false;
             } else {
+                this.successNewBook = false;
                 this.error = true;
-            }}).catch(error => alert(error))*/
+            }}).catch(error => {console.log(error),this.error = true; this.successNewBook = false;})
       },
+
+
       onReset() {
         // Reset our form values
-        this.form.bookName = "",
+        this.form.title = "",
         this.form.author = "",
         this.form.publisher = "",
         this.form.pages = "",

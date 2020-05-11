@@ -6,9 +6,9 @@
                 <b-col class="book-element" v-for="book in items.books" :key="book" md="3">
                     <b-row class="mt-4 justify-content-md-center" v-on:click="goToBook(book.id)"> 
                         <b-col class="book-element" md="8">
-                            <b-img class="book-cover" :src="'http://covers.openlibrary.org/b/isbn/'+ book.isbn + '-L.jpg'" fluid alt="Responsive image"></b-img>
+                            <b-img class="book-cover" :src="'http://covers.openlibrary.org/b/isbn/'+ book.isbn + '-L.jpg?default=false' || image.sample" fluid alt="Responsive image" @error="imageUrlAlt"></b-img>
                             <div class="book-info">
-                                <strong>{{ book.bookName }}</strong><br>
+                                <strong>{{ book.title }}</strong><br>
                                 <strong>{{ book.author }}</strong><br>
                                 <strong>{{ book.genre }}</strong><br>
                             </div>
@@ -16,8 +16,10 @@
                     </b-row>
                     
                 </b-col>
+                
+            <b-alert class="m-5" variant="danger" show v-if="noBooks">There are no books on the catalogue!</b-alert>
             </b-row>
-            <b-row class="mt-12 justify-content-md-center">
+            <b-row class="mt-12 justify-content-md-center" v-if="this.items.length != 0">
                 <b-col md="2">
                     <b-pagination class="book-pagination"
                         v-model="currentPage"
@@ -25,6 +27,7 @@
                         :per-page="items.size"
                         aria-controls="my-table"
                         size="md"
+                        @change="test"
                         ></b-pagination>
                 </b-col>
             </b-row>
@@ -33,23 +36,51 @@
 </template>
 
 <script>
-  //import {APIService} from '../APIService';
+  import {APIBookService} from '../APIBookService';
   export default {
     data() {
         return {
+            limit : 2,
+            noBooks : false,
+            imageError : false,
             currentPage: 1,
-            items: {"numBooks" : 20, "page" : 1, "size" : 5, "books" : [{"id" : 5, "bookName":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "bookName":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "bookName":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "bookName":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "bookName":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "bookName":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "bookName":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "bookName":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"}]},
+            //items: {"numBooks" : 20, "page" : 1, "size" : 5, "books" : [{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"}]},
+            items : {},
+            images: {
+                sample: require('../assets/missingbook.png')
+            }
         }
     },
 
     mounted() {
       this.$emit("authenticated", true);
+      this.getBooks(this.limit,this.currentPage);
     },
 
     methods: {
         goToBook(id) {  
             this.$router.push({ name: 'book', params: { id: id } })
+        },
+        getBooks(limit,offset) {
+            const apiService = new APIBookService();
+            var data = apiService.getBooks(limit,offset);
+            //this.datos = JSON.stringify(this.form);
+            data.then(result => {
+                if (result.status == 200) {
+                    this.items = result.data;
+                    this.noBooks = false;
+                } else {
+                    this.items = "";
+                    this.noBooks = true;
+                }}).catch(error => {console.log(error),this.noBooks = true;})
+        },
+        imageUrlAlt(event) {
+            event.target.src = this.images.sample;
+        },
+        test() {
+            this.getBooks(this.limit,this.currentPage);
         }
+        
     }
   }
 </script>

@@ -55,6 +55,7 @@
     },
     mounted() {
       this.$emit("authenticated", true);
+      this.$emit("role", "Administrator");
       this.getUsers();
     },
 

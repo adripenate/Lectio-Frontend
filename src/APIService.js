@@ -39,7 +39,6 @@ export class APIService {
 
     async updateUser(id,user){
         const url = `${API_URL}/users/`;
-        console.log(headersUpdate);
         return await axios.put(url+id, user, {
             headers: headersUpdate
         });
@@ -51,7 +50,6 @@ export class APIService {
     }
 
     async getUsers() {
-        console.log(localStorage.getItem("token"));
         const url = `${API_URL}/users`;
         return await axios.get(url, {
             headers: headers
@@ -61,7 +59,7 @@ export class APIService {
     async getUser(id) {
         const url = `${API_URL}/users/`;
         return await axios.get(url + id, {
-            headers: headers
+            headers: headersUpdate
         }).then((response) => response).catch( error => { console.log(error); });
     }
 
