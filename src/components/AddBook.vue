@@ -148,7 +148,6 @@
             } else {
                 this.error = true;
             }}).catch(error => alert(error))*/
-        
       },
       onReset() {
         // Reset our form values
