@@ -55,7 +55,7 @@
       </b-col>
   </b-row>
   </b-container>
-    <router-view @authenticated="isLogged" @login="setAuthenticated" @role="checkRole"></router-view>
+    <router-view @authenticated="isLogged" @login="setAuthenticated" @role="checkRole" :key="$route.fullPath"></router-view>
   </div>
 </template>
 

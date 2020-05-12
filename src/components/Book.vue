@@ -4,19 +4,19 @@
         <h1 class="title">{{ book.bookName }}</h1>
             <b-row class="mt-10 justify-content-md-center"> 
                 <b-col class="book-cover"  md="6">
-                    <b-img class="book-cover-image" :src="'http://covers.openlibrary.org/b/isbn/'+ book.isbn + '-L.jpg'" fluid alt="Responsive image"></b-img>
-                                
+                    <b-img class="book-cover-info" :src="'http://covers.openlibrary.org/b/isbn/'+ book.isbn + '-L.jpg?default=false' || image.sample" fluid alt="Responsive image" @error="imageUrlAlt"></b-img>
                 </b-col>
 
                 <b-col class="book-information" md="6">
                     <div >
-                        <p><strong>Title: </strong><br>{{ book.bookName }}</p>
+                        <p><strong>Title: </strong><br>{{ book.title }}</p>
                         <p><strong>Author: </strong><br>{{ book.author }}</p>
                         <p><strong>Synopsis: </strong><br>{{ book.synopsis }}</p>
                         <b-badge class="genres" variant="success" v-for="genre in book.genres" :key="genre">{{ genre }}</b-badge>
                     </div>
                 </b-col>
             </b-row>
+
             <b-row class="mt-4 book-details">
                 <b-col md="12">
                     <div class="card border-light">
@@ -34,20 +34,37 @@
 </template>
 
 <script>
-  //import {APIService} from '../APIService';
+  import {APIBookService} from '../APIBookService';
   export default {
     data() {
       return {
-        book: {"id" : 5, "bookName":"REINA ROJA","author":"JUAN GOMEZ-JURADO","publisher":"S.A. EDICIONES B","pages":"1233","isbn":"9788448005009","genres": ["Science fiction", "Fantasy"],"synopsis":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id nibh luctus, gravida purus sed, sagittis massa. Vestibulum ut nisi pharetra, feugiat ex lacinia, molestie magna. Nunc varius ex eget ligula fringilla pellentesque. In lorem lacus, ultricies eget purus ut, dapibus sagittis diam. Nulla ornare dolor eget urna consectetur venenatis. Curabitur efficitur in est a tempor. Phasellus velit dolor, sodales vitae massa quis, varius blandit nulla. Integer eu placerat massa. Donec blandit fringilla eros, at facilisis nunc. Nunc convallis massa nisi, vel porttitor ante vulputate eu. Duis eu enim id risus feugiat consequat. Donec a mattis erat."}, 
+            book: {},
+            images: {
+                sample: require('../assets/missingbook.png')
+            },
         }
     },
 
     mounted() {
       this.$emit("authenticated", true);
+      this.getBookData(this.$route.params.id);
     },
 
     methods: {
-
+        getBookData(id){
+            var apiBookService = new APIBookService();
+            apiBookService.getBook(id).then(result => {
+                if (result.status == 200) {
+                    this.book = result.data;
+                } else {
+                    alert("An error has ocurred");
+                    console.log("Component Book - An error has ocurred");
+                }
+            })
+        },
+        imageUrlAlt(event) {
+            event.target.src = this.images.sample;
+        },
     }
   }
 </script>
@@ -59,6 +76,10 @@
 .book-element{
     margin-top: 3vh;
     padding: 0%;
+}
+
+.book-cover-info{
+    height: 70vh;
 }
 
 .book-information {

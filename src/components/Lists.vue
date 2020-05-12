@@ -3,7 +3,7 @@
         <b-container>
             <h1 class="title">My lists</h1>
             <b-row>
-                <b-col>
+                <b-col md="4">
                     <ul class="list-unstyled">
                         <b-media tag="li" v-for="list in this.lists" :key="list">
                                 
@@ -14,10 +14,18 @@
                             </template>
 
                             <h4 class="mt-0 mb-1">{{list.name}}</h4>
-                            <p class="mb-0">{{list.description}}</p>
                         </b-media>
-
                     </ul>
+                </b-col>
+                <b-col md="8">
+                    <div> 
+                        <b-table :items="items.books" :fields="fields" striped responsive="sm" @row-clicked="myRowClickHandler">
+                            <template v-slot:cell(options)="row">
+                                <b-img class="book-cover-list" :src="'http://covers.openlibrary.org/b/isbn/'+ row.item.isbn + '-S.jpg?default=false' || image.sample" fluid alt="Responsive image" @error="imageUrlAlt"></b-img>
+                            </template>
+                        </b-table>
+                        {{text}}
+                    </div>   
                 </b-col>
             </b-row>
         </b-container>
@@ -26,6 +34,7 @@
 
 <script>
   //import {APIService} from '../APIService';
+  
   export default {
     data() {
       return {
@@ -36,28 +45,21 @@
                 {"id": "2",
                 "name": "Readed",
                 "description": "My readed books",
-                "numberBooks": "8"}]
+                "numberBooks": "8"}],
+        items: {"numBooks" : 20, "page" : 1, "size" : 5, "books" : [{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"}]},
+        fields: ['options', 'title', 'author'],
       }
     },
+    mounted() {
+      this.$emit("authenticated", true);
+    },
     methods: {
-      onSubmit(e) {
-        e.preventDefault();
-        //const apiService = new APIService();
-        /*var data = apiService.login(JSON.stringify(this.form));
-        data.then(result => {
-            if (result.status == 200) {
-                localStorage.setItem("token", result.headers.authorization);
-                localStorage.setItem("userInfo", JSON.stringify(this.userData));
-                this.error = false;
-                this.$emit("login", true);
-            } else {
-                this.error = true;
-            }}).catch(error => alert(error))
-            this.onReset();*/
-      },
-      getUserInfo(){
-          return this.userData;
-      }
+        myRowClickHandler(record) {
+            this.goToBook(record.id);
+        },
+        goToBook(id) {  
+            this.$router.push({ name: 'book', params: { id: id } })
+        }
     }
   }
 </script>
@@ -66,14 +68,12 @@
 .title{
     padding: 5vh;
 }
+
 .list-unstyled{
     text-align: left;
 }
+
 .list-unstyled li{
     padding: 3vh;
-}
-.booklist-icon{
-    width: 120px; 
-    height: 120px;
 }
 </style>

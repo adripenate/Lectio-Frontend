@@ -17,7 +17,7 @@
                     
                 </b-col>
                 
-            <b-alert class="m-5" variant="danger" show v-if="noBooks">There are no books on the catalogue!</b-alert>
+                <b-alert class="m-5" variant="danger" show v-if="noBooks">There are no books on the catalogue!</b-alert>
             </b-row>
             <b-row class="mt-12 justify-content-md-center" v-if="this.items.length != 0">
                 <b-col md="2">
@@ -27,7 +27,7 @@
                         :per-page="items.size"
                         aria-controls="my-table"
                         size="md"
-                        @change="test"
+                        @input="test"
                         ></b-pagination>
                 </b-col>
             </b-row>
@@ -40,15 +40,15 @@
   export default {
     data() {
         return {
-            limit : 2,
+            limit : 8,
             noBooks : false,
             imageError : false,
             currentPage: 1,
-            //items: {"numBooks" : 20, "page" : 1, "size" : 5, "books" : [{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"}]},
             items : {},
             images: {
                 sample: require('../assets/missingbook.png')
-            }
+            },
+            datos : ""
         }
     },
 
@@ -63,10 +63,10 @@
         },
         getBooks(limit,offset) {
             const apiService = new APIBookService();
-            var data = apiService.getBooks(limit,offset);
-            //this.datos = JSON.stringify(this.form);
+            var data = apiService.getBooks(limit,offset-1);
             data.then(result => {
                 if (result.status == 200) {
+                    this.datos = JSON.stringify(result.data);
                     this.items = result.data;
                     this.noBooks = false;
                 } else {
@@ -79,8 +79,7 @@
         },
         test() {
             this.getBooks(this.limit,this.currentPage);
-        }
-        
+        }     
     }
   }
 </script>
@@ -97,6 +96,7 @@
 .book-element{
     margin-top: 3vh;
     padding: 0%;
+    cursor: pointer;
 }
 .book-element .book-cover {
     -webkit-transition: opacity 0.5s ease-in-out;
@@ -119,6 +119,7 @@
     text-align: center;
     word-break: break-all;
     font-size: 25px;
+
 }
 .book-element:hover .book-info {
     display: block;

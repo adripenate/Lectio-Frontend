@@ -10,16 +10,16 @@ const headers = {
     'Authorization': localStorage.getItem("token")
 }
 
-const headersUpdate = {
+/*const headersUpdate = {
     'Content-Type': 'application/json',
     'Authorization': localStorage.getItem("token"),
     'Access-Control-Allow-Origin' : 'http://localhost:8080',
     'Access-Control-Allow-Credentials': true,
     'Access-Control-Allow-Methods' : 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers':'application/json'
-}
+}*/
 
-export class APIBookService {
+export class APIListService {
 
     constructor(){}
 
