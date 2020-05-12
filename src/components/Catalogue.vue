@@ -119,7 +119,6 @@
     text-align: center;
     word-break: break-all;
     font-size: 25px;
-
 }
 .book-element:hover .book-info {
     display: block;
