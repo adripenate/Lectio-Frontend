@@ -32,9 +32,13 @@
             <b-nav-item href="/books">Catalogue</b-nav-item>
           </b-navbar-nav>
 
-          <div v-if="this.role =='Student'">
+          <div v-if="this.role =='Student'"  class="navOptions">
             <b-navbar-nav>
               <b-nav-item href="/lists">My lists</b-nav-item>
+            </b-navbar-nav>
+
+            <b-navbar-nav>
+              <b-nav-item href="/createList">Create new list!</b-nav-item>
             </b-navbar-nav>
           </div>
           

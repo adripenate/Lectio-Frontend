@@ -14,6 +14,7 @@ import AddBook from './components/AddBook.vue'
 import Catalogue from './components/Catalogue.vue'
 import Book from './components/Book.vue'
 import Lists from './components/Lists.vue'
+import AddList from './components/AddList.vue'
  
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
@@ -34,6 +35,7 @@ const router = new VueRouter({
     { path: '/lists', component: Lists, name : "lists", meta: {title: "Lectio - Lists"} },
     { path: '/book/:id', component: Book, name : "book", meta: {title: "Lectio - Book Information"} },
     { path: '/userList', component: UserList, name : "userList", meta: {title: "Lectio - Home"} },
+    { path: '/createList', component: AddList, name : "createList", meta: {title: "Lectio - Create List"} },
   ]
 })
 

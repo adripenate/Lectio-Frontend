@@ -4,18 +4,15 @@
             <h1 class="title">My lists</h1>
             <b-row>
                 <b-col md="4">
-                    <ul class="list-unstyled">
-                        <b-media tag="li" v-for="list in this.lists" :key="list">
-                                
-                            <template v-slot:aside>
-                                <b-icon v-if="list.name == 'Readed'" icon="book" class="booklist-icons"></b-icon>
-                                <b-icon v-if="list.name == 'Marked for later'" icon="bookmarks" class="booklist-icons"></b-icon>
-                                <b-icon v-if="list.name != 'Marked for later' && list.name != 'Readed'" icon="bookmark-fill" class="booklist-icons"></b-icon>
-                            </template>
+                    <b-list-group>
+                        <b-list-group-item >
+                            <b-list-group-item @click="getBooks('Pending')">Pending</b-list-group-item>
+                            <b-list-group-item @click="getBooks('Esperando')">Esperando</b-list-group-item>
+                        </b-list-group-item>
+                    </b-list-group>
 
-                            <h4 class="mt-0 mb-1">{{list.name}}</h4>
-                        </b-media>
-                    </ul>
+                    
+
                 </b-col>
                 <b-col md="8">
                     <div> 
@@ -33,24 +30,20 @@
 </template>
 
 <script>
-  //import {APIService} from '../APIService';
+  import {APIListService} from '../APIListService';
   
   export default {
     data() {
       return {
-        lists: [{"id": "1",
-                "name": "Marked for later",
-                "description": "Books marked for later",
-                "numberBooks": "5"},
-                {"id": "2",
-                "name": "Readed",
-                "description": "My readed books",
-                "numberBooks": "8"}],
+        lists: [],
         items: {"numBooks" : 20, "page" : 1, "size" : 5, "books" : [{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"},{"id" : 5, "title":"Libro","author":"Autor","publisher":"Editorial","pages":"1233","isbn":"9788448005009","genre":"Science fiction","synopsis":"Sinopsis del libro"}]},
         fields: ['options', 'title', 'author'],
+        images: {
+            sample: require('../assets/missingbook.png')
+        }
       }
     },
-    mounted() {
+    mounted(){
       this.$emit("authenticated", true);
     },
     methods: {
@@ -59,6 +52,19 @@
         },
         goToBook(id) {  
             this.$router.push({ name: 'book', params: { id: id } })
+        },
+        imageUrlAlt(event) {
+            event.target.src = this.images.sample;
+        },
+        getBooks(name) {
+            var apiService = new APIListService();
+            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
+            apiService.getBookOfList(idUser, name).then((response) => {
+                if (response.status == 200) {
+                    this.items.books = response.data.books;
+                } else {
+                    alert("error");
+                }}).catch(error => {alert(error);});
         }
     }
   }
@@ -75,5 +81,9 @@
 
 .list-unstyled li{
     padding: 3vh;
+}
+
+.book-cover-list {
+    max-width: 36px;
 }
 </style>

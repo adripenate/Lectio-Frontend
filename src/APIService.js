@@ -21,7 +21,10 @@ const headersUpdate = {
 
 export class APIService {
 
-    constructor(){}
+    constructor(){
+        headersUpdate.Authorization = localStorage.getItem("token");
+
+    }
 
     async login(user){
         const url = `${API_URL}/login`;

@@ -12,11 +12,21 @@
                         <p><strong>Title: </strong><br>{{ book.title }}</p>
                         <p><strong>Author: </strong><br>{{ book.author }}</p>
                         <p><strong>Synopsis: </strong><br>{{ book.synopsis }}</p>
-                        <b-badge class="genres" variant="success" v-for="genre in book.genres" :key="genre">{{ genre }}</b-badge>
+                        <b-badge class="genres" v-for="genre in book.genres" :key="genre">{{ genre }}</b-badge>
+                    </div>
+                    
+                </b-col>
+            </b-row>
+            <b-row class="mt-10 justify-content-md-center"> 
+                <b-col class="book-cover"  md="4">
+                    <div class="mt-4">
+                        <b-button pill variant="primary" class="list-button" @click="addBookToPending">Add to Pending</b-button>
+                        <b-button pill variant="success" class="list-button" @click="addBookToReaded">Readed!</b-button>
+                        <b-alert class="m-5" variant="danger" show v-if="error">The book is already in the list {{list}}!</b-alert>
+                        <b-alert class="m-5" variant="success" show v-if="successAdded">Book added to {{ list }} </b-alert>
                     </div>
                 </b-col>
             </b-row>
-
             <b-row class="mt-4 book-details">
                 <b-col md="12">
                     <div class="card border-light">
@@ -35,6 +45,7 @@
 
 <script>
   import {APIBookService} from '../APIBookService';
+  //import {APIListService} from '../APIListService';
   export default {
     data() {
       return {
@@ -42,6 +53,8 @@
             images: {
                 sample: require('../assets/missingbook.png')
             },
+            error : false,
+            successAdded : false
         }
     },
 
@@ -65,6 +78,32 @@
         imageUrlAlt(event) {
             event.target.src = this.images.sample;
         },
+        addBookToPending() {
+            this.list = "Pending";
+            this.addBookToList(this.$route.params.id,this.list);
+        },
+        addBookToReaded() {
+            this.list = "Readed";
+            this.addBookToList(this.$route.params.id,this.list);
+            
+        },
+
+        addBookToList(id,listName) {
+            alert("Add book with id " + id + " to list with name "+ listName);
+            this.successAdded = true;
+            this.error = false;
+            /*var apiBookService = new APIListService();
+            apiBookService.addBookTo(id,listName).then(result => {
+                if (result.status == 200) {
+                    this.successAdded = true;
+                    this.error = false;
+                } else {
+                    this.successAdded = false;
+                    this.error = true;
+                    console.log("Component Book - An error has ocurred");
+                }
+            })*/
+        }
     }
   }
 </script>
@@ -80,6 +119,7 @@
 
 .book-cover-info{
     height: 70vh;
+    max-height: 500px;
 }
 
 .book-information {
@@ -93,6 +133,10 @@
 }
 
 .genres, .book-icons {
+    margin: 1vh;
+}
+
+.list-button {
     margin: 1vh;
 }
 
