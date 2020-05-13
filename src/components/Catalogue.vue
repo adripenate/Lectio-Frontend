@@ -17,6 +17,7 @@
                     
                 </b-col>
                 
+                
                 <b-alert class="m-5" variant="danger" show v-if="noBooks">There are no books on the catalogue!</b-alert>
             </b-row>
             <b-row class="mt-12 justify-content-md-center" v-if="this.items.length != 0">
