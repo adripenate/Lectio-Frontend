@@ -8,7 +8,7 @@
             <b-col md="6">
                 <b-form-input
                     id="name-field"
-                    v-model="form.name"
+                    v-model="form.list_name"
                     required
                     placeholder="Enter list name"
                 ></b-form-input>
@@ -20,7 +20,7 @@
             <b-col md="6">
                 <b-form-textarea
                     id="description-field"
-                    v-model="form.description"
+                    v-model="form.list_description"
                     placeholder="Enter list description..."
                     rows="3"
                     required
@@ -42,13 +42,15 @@
 </template>
 
 <script>
-  //import {APIListService} from '../APIListService';
+  import {APIListService} from '../APIListService';
+  import Vue from 'vue'
+
   export default {
     data() {
       return {
         form: {
-          name: "",
-          description: ""
+          list_name: "",
+          list_description: ""
         },
         datos: "",
         successNewList : false,
@@ -65,13 +67,9 @@
       onSubmit(e) {
         e.preventDefault();
         var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
-        alert(JSON.stringify(this.form) + " with user_id = " + idUser);
-        this.successNewList = true;
-        this.error = false;
-        this.onReset();
-        /*const apiService = new APIListService();
-        var data = apiService.createList(JSON.stringify(this.form));
-        //this.datos = JSON.stringify(this.form);
+        const apiService = new APIListService();
+        Vue.set(this.form, "user_id", idUser);
+        var data = apiService.createList(JSON.stringify(this.form), idUser);
         data.then(result => {
             if (result.status == 201) {
                 this.successNewList = true;
@@ -80,14 +78,13 @@
             } else {
                 this.successNewList = false;
                 this.error = true;
-            }}).catch(error => {console.log(error),this.error = true; this.successNewList = false;})*/
+            }}).catch(error => {console.log(error),this.error = true; this.successNewList = false;})
       },
-
 
       onReset() {
         // Reset our form values
-        this.form.name = "",
-        this.form.description = "",
+        this.form.list_name = "",
+        this.form.list_description = "",
         this.$nextTick(() => {
           this.show = true
         })

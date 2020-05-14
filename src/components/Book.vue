@@ -17,16 +17,17 @@
                     
                 </b-col>
             </b-row>
+
             <b-row class="mt-10 justify-content-md-center"> 
-                <b-col class="book-cover"  md="4">
+                <b-col class="book-cover" md="4">
                     <div class="mt-4">
-                        <b-button pill variant="primary" class="list-button" @click="addBookToPending">Add to Pending</b-button>
-                        <b-button pill variant="success" class="list-button" @click="addBookToReaded">Readed!</b-button>
-                        <b-alert class="m-5" variant="danger" show v-if="error">The book is already in the list {{list}}!</b-alert>
-                        <b-alert class="m-5" variant="success" show v-if="successAdded">Book added to {{ list }} </b-alert>
+                        <b-button class="list-button" v-b-modal.modal>Add book to list</b-button>
+                        <b-alert class="m-5" variant="danger" show v-if="error">The book is already in the list</b-alert>
+                        <b-alert class="m-5" variant="success" show v-if="successAdded">Successfully added </b-alert>
                     </div>
                 </b-col>
             </b-row>
+            
             <b-row class="mt-4 book-details">
                 <b-col md="12">
                     <div class="card border-light">
@@ -40,12 +41,25 @@
                 </b-col>
             </b-row>
     </b-container>
+    <b-modal
+      id="modal"
+      ref="modal"
+      title="Add book to list"
+      @show="getLists"
+      @ok="handleOk"
+      hide-footer
+    >
+        <b-list-group>
+            <b-list-group-item class="list-items" v-for="list in lists" :key="list" @click="addBookToList(list.list_id)">{{list.list_name}}</b-list-group-item>
+        </b-list-group>
+    </b-modal>
 </div>
 </template>
 
 <script>
   import {APIBookService} from '../APIBookService';
-  //import {APIListService} from '../APIListService';
+  import {APIListService} from '../APIListService';
+
   export default {
     data() {
       return {
@@ -54,7 +68,12 @@
                 sample: require('../assets/missingbook.png')
             },
             error : false,
-            successAdded : false
+            successAdded : false,
+            lists: {},
+            request_data: {
+                list_id: "",
+                book_id: ""
+            },
         }
     },
 
@@ -78,31 +97,27 @@
         imageUrlAlt(event) {
             event.target.src = this.images.sample;
         },
-        addBookToPending() {
-            this.list = "Pending";
-            this.addBookToList(this.$route.params.id,this.list);
-        },
-        addBookToReaded() {
-            this.list = "Readed";
-            this.addBookToList(this.$route.params.id,this.list);
-            
-        },
-
-        addBookToList(id,listName) {
-            alert("Add book with id " + id + " to list with name "+ listName);
-            this.successAdded = true;
-            this.error = false;
-            /*var apiBookService = new APIListService();
-            apiBookService.addBookTo(id,listName).then(result => {
-                if (result.status == 200) {
+        addBookToList(listID) {
+            var apiBookService = new APIListService();
+            this.request_data.book_id = this.$route.params.id;
+            this.request_data.list_id = listID;
+            apiBookService.addBookTo(JSON.stringify(this.request_data)).then(result => {
+                if (result.status == 201) {
                     this.successAdded = true;
                     this.error = false;
-                } else {
-                    this.successAdded = false;
-                    this.error = true;
-                    console.log("Component Book - An error has ocurred");
                 }
-            })*/
+                this.$refs['modal'].hide()
+            }).catch(error => {console.log(error), this.error = true; this.successAdded = false; this.$refs['modal'].hide();})
+        },
+        getLists(){
+            var apiService = new APIListService();
+            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
+            apiService.getList(idUser).then((response) => {
+                if (response.status == 200) {
+                    this.lists = response.data;
+                } else {
+                    alert("error");
+                }}).catch(error => {alert(error);});
         }
     }
   }
@@ -112,6 +127,7 @@
 .title{
     padding: 5vh;
 }
+
 .book-element{
     margin-top: 3vh;
     padding: 0%;
@@ -138,6 +154,23 @@
 
 .list-button {
     margin: 1vh;
+}
+
+.list-items {
+    background-color: #24AFDC;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    font-size: 16px;
+    margin: 4px 2px;
+    opacity: 0.6;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.list-items:hover {
+    opacity: 1
 }
 
 </style>

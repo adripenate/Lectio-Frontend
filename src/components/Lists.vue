@@ -11,8 +11,9 @@
                 </b-col>
 
                 <b-col md="8">
+                    <h5 class="title-list">{{list_name}}</h5>
                     <div> 
-                        <b-table :items="items.books" :fields="fields" striped responsive="sm" @row-clicked="myRowClickHandler" v-if="!no_books">
+                        <b-table :items="items" :fields="fields" striped responsive="sm" @row-clicked="myRowClickHandler" v-if="!no_books">
                             <template v-slot:cell(options)="row">
                                 <b-img class="book-cover-list" :src="'http://covers.openlibrary.org/b/isbn/'+ row.item.isbn + '-S.jpg?default=false' || image.sample" fluid alt="Responsive image" @error="imageUrlAlt"></b-img>
                             </template>
@@ -37,7 +38,8 @@
         images: {
             sample: require('../assets/missingbook.png')
         },
-        no_books: false
+        no_books: false,
+        list_name: ""
       }
     },
     mounted(){
@@ -55,12 +57,13 @@
             event.target.src = this.images.sample;
         },
         getBooks(name) {
+            this.list_name = name;
             var apiService = new APIListService();
             var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
             apiService.getBookOfList(idUser, name).then((response) => {
                 if (response.status == 200) {
                     this.no_books = false;
-                    this.items.books = response.data.books;
+                    this.items = response.data.books;
                 } else {
                     this.no_books = true;
                 }}).catch(error => {alert(error);});
@@ -71,6 +74,7 @@
             apiService.getList(idUser).then((response) => {
                 if (response.status == 200) {
                     this.lists = response.data;
+                    this.getBooks(this.lists[0].list_name);
                 } else {
                     alert("error");
                 }}).catch(error => {alert(error);});
@@ -80,8 +84,8 @@
 </script>
 
 <style>
-.title{
-    padding: 5vh;
+.title-list{
+    padding: 1vh;
 }
 
 .list-unstyled{

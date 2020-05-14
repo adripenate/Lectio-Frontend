@@ -26,10 +26,10 @@ export class APIListService {
         headersUpdate.Authorization = localStorage.getItem("token");
     }
 
-    async createList(list){
-        const url = `${API_URL}/lists`;
-        return await axios.post(url, list, {
-            headers: headers
+    async createList(list, userID){
+        const url = `${API_URL}/users/`;
+        return await axios.post(url + userID + "/list", list, {
+            headers: headersUpdate
         });
     }
 
@@ -45,5 +45,12 @@ export class APIListService {
         return await axios.get(url + idUser + "/list", {
             headers: headersUpdate
         }).then((response) => response).catch( error => { console.log(error); });
+    }
+
+    async addBookTo(data){
+        const url = `${API_URL}/lists`;
+        return await axios.post(url, data, {
+            headers: headersUpdate
+        });
     }
 }
