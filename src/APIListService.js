@@ -39,4 +39,11 @@ export class APIListService {
             headers: headersUpdate
         }).then((response) => response).catch( error => { console.log(error); });
     }
+
+    async getList(idUser) {
+        const url = `${API_URL}/users/`;
+        return await axios.get(url + idUser + "/list", {
+            headers: headersUpdate
+        }).then((response) => response).catch( error => { console.log(error); });
+    }
 }
