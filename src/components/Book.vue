@@ -97,6 +97,7 @@
         imageUrlAlt(event) {
             event.target.src = this.images.sample;
         },
+        
         addBookToList(listID) {
             var apiBookService = new APIListService();
             this.request_data.book_id = this.$route.params.id;
