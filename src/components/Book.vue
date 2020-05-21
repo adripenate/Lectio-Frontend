@@ -40,25 +40,53 @@
                     </div>
                 </b-col>
             </b-row>
+
+            <hr>
+            <b-row class="mt-4 book-details">
+                <b-col md="12">
+                    <div class="card border-light">
+                        <div class="card-header"><h5>Reviews</h5></div>
+                        <div class="card-body">
+                            <CreateReview/>
+                        </div>
+                    </div>
+                   
+                </b-col>
+            </b-row>
+
+            <b-row class="mt-4 book-details">
+                <b-col md="12">
+                    <Review/>
+                </b-col>
+            </b-row>
+
+
     </b-container>
+    
+    
+    
+    
     <b-modal
       id="modal"
       ref="modal"
       title="Add book to list"
       @show="getLists"
-      @ok="handleOk"
       hide-footer
     >
         <b-list-group>
             <b-list-group-item class="list-items" v-for="list in lists" :key="list" @click="addBookToList(list.list_id)">{{list.list_name}}</b-list-group-item>
         </b-list-group>
     </b-modal>
+
+    
 </div>
 </template>
 
 <script>
   import {APIBookService} from '../APIBookService';
   import {APIListService} from '../APIListService';
+  import CreateReview from './CreateReview.vue'
+  import Review from './Review.vue'
 
   export default {
     data() {
@@ -120,7 +148,12 @@
                     alert("error");
                 }}).catch(error => {alert(error);});
         }
+    },
+    components: {
+        CreateReview,
+        Review
     }
+
   }
 </script>
 

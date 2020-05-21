@@ -1,0 +1,131 @@
+<template>
+    <b-container>
+        <b-row v-for="review in items.reviews" :key="review">
+            <b-col>
+                <b-card>
+                    <b-media>
+                        <template v-slot:aside>
+                            <b-img blank blank-color="#ccc" width="64" alt="placeholder"></b-img>
+                        </template>
+                        <b-container>
+                            <b-row>
+                                <b-col md="2">
+                                    <h5 class="mt-0">{{ review.username }}</h5>
+                        
+                                    <p class="small">
+                                        {{ review.date}}
+                                    </p>
+                                </b-col>
+
+                                <b-col>
+                                    <b-form-rating id="rating-disabled" variant="warning" :value="review.rating" disabled inline  class="mb-2 rate"></b-form-rating>
+                                </b-col>
+                                <b-col md="1" class="mt-2">
+                                     {{review.rating}}/5
+                                </b-col>
+                            </b-row>
+                        </b-container>
+                        
+                        <p>
+                            {{review.comment}}
+                        </p>
+                        <p>
+                            Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque
+                            penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+                        </p>
+                    </b-media>
+                </b-card>
+            </b-col>
+            
+        </b-row>
+
+        <b-row v-if="this.items.length == 0 || this.items.reviews.length == 0">
+            <b-col md="12">
+                <b-alert show variant="warning" class="center">There are no reviews for this book yet</b-alert>
+            </b-col>
+        </b-row>
+
+        <b-row class="mt-12 justify-content-md-center" v-if="this.items.length != 0 && this.items.numReviews > 8">
+                <b-col md="2">
+                    <b-pagination class="book-pagination"
+                        v-model="currentPage"
+                        :total-rows="items.numReviews"
+                        :per-page="items.size"
+                        aria-controls="my-table"
+                        size="md"
+                        @input="test"
+                        ></b-pagination>
+                </b-col>
+            </b-row>
+    </b-container>
+</template>
+
+<script>
+  //import {APIBookService} from '../APIBookService';
+  export default {
+    data() {
+        return {
+            limit : 8,
+            noReviews : false,
+            imageError : false,
+            currentPage: 1,
+            items : {"numReviews": 0,"page": 0,"size": 0,
+                "reviews": [{
+                        "id": 1,
+                        "date" : "21/05/2020 15:05",
+                        "rating": 4,
+                        "comment" : "\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque purus sapien, lobortis nec velit id, semper laoreet ex. Suspendisse eu elementum nunc. Nam condimentum id dui vel gravida. Integer vulputate accumsan urna, sit amet viverra ipsum porttitor ac. Mauris vel massa molestie, varius lectus id, pulvinar neque. Nunc nec rhoncus erat, et efficitur justo. Sed rhoncus sagittis diam ut suscipit. Vestibulum aliquet elementum urna et egestas. Phasellus consectetur, est ut elementum feugiat, justo nibh gravida metus, sed hendrerit metus est et nulla. Integer lacinia vehicula eleifend. Donec convallis turpis eu auctor interdum. Sed id cursus elit. Nam rutrum quam quis mi dictum luctus.",
+                        "username": "Jose Perez"
+                    },{
+                        "id": 1,
+                        "date" : "21/05/2020 16:05",
+                        "rating": 2,
+                        "comment" : "\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque purus sapien, lobortis nec velit id, semper laoreet ex. Suspendisse eu elementum nunc. Nam condimentum id dui vel gravida. Integer vulputate accumsan urna, sit amet viverra ipsum porttitor ac. Mauris vel massa molestie, varius lectus id, pulvinar neque. Nunc nec rhoncus erat, et efficitur justo. Sed rhoncus sagittis diam ut suscipit. Vestibulum aliquet elementum urna et egestas. Phasellus consectetur, est ut elementum feugiat, justo nibh gravida metus, sed hendrerit metus est et nulla. Integer lacinia vehicula eleifend. Donec convallis turpis eu auctor interdum. Sed id cursus elit. Nam rutrum quam quis mi dictum luctus.",
+                        "username": "Josito Perez"
+                    },{
+                        "id": 1,
+                        "date" : "21/05/2020 17:05",
+                        "rating": 1,
+                        "comment" : "\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque purus sapien, lobortis nec velit id, semper laoreet ex. Suspendisse eu elementum nunc. Nam condimentum id dui vel gravida. Integer vulputate accumsan urna, sit amet viverra ipsum porttitor ac. Mauris vel massa molestie, varius lectus id, pulvinar neque. Nunc nec rhoncus erat, et efficitur justo. Sed rhoncus sagittis diam ut suscipit. Vestibulum aliquet elementum urna et egestas. Phasellus consectetur, est ut elementum feugiat, justo nibh gravida metus, sed hendrerit metus est et nulla. Integer lacinia vehicula eleifend. Donec convallis turpis eu auctor interdum. Sed id cursus elit. Nam rutrum quam quis mi dictum luctus.",
+                        "username": "Jose Pepito"
+                    }]
+            },
+            datos : ""
+        }
+    },
+
+    mounted() {
+      this.$emit("authenticated", true);
+      this.getReviews(this.$route.params.id,this.limit,this.currentPage);
+    },
+
+    methods: {
+        /*getReviews(id,limit,offset) {
+            /*const apiService = new APIBookService();
+            var data = apiService.getReviewsOfBook(id,limit,offset-1);
+            data.then(result => {
+                if (result.status == 200) {
+                    this.datos = JSON.stringify(result.data);
+                    this.items = result.data;
+                    this.noReviews = false;
+                } else {
+                    this.items = "";
+                    this.noReviews = true;
+                }}).catch(error => {console.log(error),this.noReviews = true;})
+        },*/
+        goToPage() {
+            this.getReviews(this.$route.params.id,this.limit,this.currentPage);
+        }     
+    }
+  }
+</script>
+
+<style>
+.rate {
+    color:#CFAE06;
+}
+
+.small {
+    size: 10px;
+}
+</style>
