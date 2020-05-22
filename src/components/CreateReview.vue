@@ -97,6 +97,6 @@
     padding: 5vh;
 }
 .center {
-  text-align: center;
+    text-align: center;
 }
 </style>
