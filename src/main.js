@@ -15,7 +15,9 @@ import Catalogue from './components/Catalogue.vue'
 import Book from './components/Book.vue'
 import Lists from './components/Lists.vue'
 import AddList from './components/AddList.vue'
- 
+import CreateClub from './components/CreateClub.vue'
+import Clubs from './components/Clubs.vue' 
+
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
@@ -36,6 +38,8 @@ const router = new VueRouter({
     { path: '/book/:id', component: Book, name : "book", meta: {title: "Lectio - Book Information"} },
     { path: '/userList', component: UserList, name : "userList", meta: {title: "Lectio - Home"} },
     { path: '/createList', component: AddList, name : "createList", meta: {title: "Lectio - Create List"} },
+    { path: '/createClub', component: CreateClub, name : "createClub", meta: {title: "Lectio - Create Club"} },
+    { path: '/clubs', component: Clubs, name : "clubs", meta: {title: "Lectio - Clubs"} }
   ]
 })
 

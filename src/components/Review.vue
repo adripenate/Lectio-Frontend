@@ -10,7 +10,7 @@
                         <b-container>
                             <b-row>
                                 <b-col md="2">
-                                    <h5 class="mt-0">{{ review.username }}</h5>
+                                    <h5 class="mt-0">{{ review.user_name }}</h5>
                         
                                     <p class="small">
                                         {{ review.date}}
@@ -18,20 +18,16 @@
                                 </b-col>
 
                                 <b-col>
-                                    <b-form-rating id="rating-disabled" variant="warning" :value="review.rating" disabled inline  class="mb-2 rate"></b-form-rating>
+                                    <b-form-rating id="rating-disabled" variant="warning" :value="review.punctuation" disabled inline  class="mb-2 rate"></b-form-rating>
                                 </b-col>
                                 <b-col md="1" class="mt-2">
-                                     {{review.rating}}/5
+                                     {{review.punctuation}}/5
                                 </b-col>
                             </b-row>
                         </b-container>
                         
                         <p>
                             {{review.comment}}
-                        </p>
-                        <p>
-                            Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque
-                            penatibus et magnis dis parturient montes, nascetur ridiculus mus.
                         </p>
                     </b-media>
                 </b-card>
@@ -61,7 +57,8 @@
 </template>
 
 <script>
-  //import {APIBookService} from '../APIBookService';
+  import {APIBookService} from '../APIBookService';
+  
   export default {
     data() {
         return {
@@ -69,27 +66,7 @@
             noReviews : false,
             imageError : false,
             currentPage: 1,
-            items : {"numReviews": 0,"page": 0,"size": 0,
-                "reviews": [{
-                        "id": 1,
-                        "date" : "21/05/2020 15:05",
-                        "rating": 4,
-                        "comment" : "\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque purus sapien, lobortis nec velit id, semper laoreet ex. Suspendisse eu elementum nunc. Nam condimentum id dui vel gravida. Integer vulputate accumsan urna, sit amet viverra ipsum porttitor ac. Mauris vel massa molestie, varius lectus id, pulvinar neque. Nunc nec rhoncus erat, et efficitur justo. Sed rhoncus sagittis diam ut suscipit. Vestibulum aliquet elementum urna et egestas. Phasellus consectetur, est ut elementum feugiat, justo nibh gravida metus, sed hendrerit metus est et nulla. Integer lacinia vehicula eleifend. Donec convallis turpis eu auctor interdum. Sed id cursus elit. Nam rutrum quam quis mi dictum luctus.",
-                        "username": "Jose Perez"
-                    },{
-                        "id": 1,
-                        "date" : "21/05/2020 16:05",
-                        "rating": 2,
-                        "comment" : "\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque purus sapien, lobortis nec velit id, semper laoreet ex. Suspendisse eu elementum nunc. Nam condimentum id dui vel gravida. Integer vulputate accumsan urna, sit amet viverra ipsum porttitor ac. Mauris vel massa molestie, varius lectus id, pulvinar neque. Nunc nec rhoncus erat, et efficitur justo. Sed rhoncus sagittis diam ut suscipit. Vestibulum aliquet elementum urna et egestas. Phasellus consectetur, est ut elementum feugiat, justo nibh gravida metus, sed hendrerit metus est et nulla. Integer lacinia vehicula eleifend. Donec convallis turpis eu auctor interdum. Sed id cursus elit. Nam rutrum quam quis mi dictum luctus.",
-                        "username": "Josito Perez"
-                    },{
-                        "id": 1,
-                        "date" : "21/05/2020 17:05",
-                        "rating": 1,
-                        "comment" : "\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque purus sapien, lobortis nec velit id, semper laoreet ex. Suspendisse eu elementum nunc. Nam condimentum id dui vel gravida. Integer vulputate accumsan urna, sit amet viverra ipsum porttitor ac. Mauris vel massa molestie, varius lectus id, pulvinar neque. Nunc nec rhoncus erat, et efficitur justo. Sed rhoncus sagittis diam ut suscipit. Vestibulum aliquet elementum urna et egestas. Phasellus consectetur, est ut elementum feugiat, justo nibh gravida metus, sed hendrerit metus est et nulla. Integer lacinia vehicula eleifend. Donec convallis turpis eu auctor interdum. Sed id cursus elit. Nam rutrum quam quis mi dictum luctus.",
-                        "username": "Jose Pepito"
-                    }]
-            },
+            items: {},
             datos : ""
         }
     },
@@ -100,9 +77,9 @@
     },
 
     methods: {
-        /*getReviews(id,limit,offset) {
-            /*const apiService = new APIBookService();
-            var data = apiService.getReviewsOfBook(id,limit,offset-1);
+        getReviews(id,limit,offset) {
+            const apiService = new APIBookService();
+            var data = apiService.getReviewsOfBook(limit, offset-1, id);
             data.then(result => {
                 if (result.status == 200) {
                     this.datos = JSON.stringify(result.data);
@@ -112,7 +89,7 @@
                     this.items = "";
                     this.noReviews = true;
                 }}).catch(error => {console.log(error),this.noReviews = true;})
-        },*/
+        },
         goToPage() {
             this.getReviews(this.$route.params.id,this.limit,this.currentPage);
         }     

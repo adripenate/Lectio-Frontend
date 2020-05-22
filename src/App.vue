@@ -26,6 +26,10 @@
             <b-navbar-nav>
               <b-nav-item href="/addNewBook">Add book</b-nav-item>
             </b-navbar-nav>
+
+            <b-navbar-nav>
+              <b-nav-item href="/createClub">Create club</b-nav-item>
+            </b-navbar-nav>
           </div>
 
           <b-navbar-nav>
@@ -38,7 +42,11 @@
             </b-navbar-nav>
 
             <b-navbar-nav>
-              <b-nav-item href="/createList">Create new list!</b-nav-item>
+              <b-nav-item href="/createList">Create new list</b-nav-item>
+            </b-navbar-nav>
+
+            <b-navbar-nav>
+              <b-nav-item href="/clubs">My clubs</b-nav-item>
             </b-navbar-nav>
           </div>
           
@@ -87,6 +95,7 @@ export default {
           this.goToHome();
       },
       checkRole(role) {
+          this.setUserData();
           if (role != this.role)
             this.goToHome();
       },

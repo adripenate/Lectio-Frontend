@@ -1,16 +1,16 @@
 <template>
 <div class="hello">
     <b-container class="bv-row">
-        <h1 class="title">Add a new list</h1>
+        <h1 class="title">Create a new club</h1>
         <b-form @submit="onSubmit" @reset="onReset" v-if="show" header='Add a new book'>
         <b-row>
             <b-col md="2" offset="2"><label for="name-field">Name:</label></b-col>
             <b-col md="6">
                 <b-form-input
                     id="name-field"
-                    v-model="form.list_name"
+                    v-model="form.club_name"
                     required
-                    placeholder="Enter list name"
+                    placeholder="Enter club name"
                 ></b-form-input>
             </b-col>
         </b-row>
@@ -20,8 +20,8 @@
             <b-col md="6">
                 <b-form-textarea
                     id="description-field"
-                    v-model="form.list_description"
-                    placeholder="Enter list description..."
+                    v-model="form.club_description"
+                    placeholder="Enter club description..."
                     rows="3"
                     required
                     max-rows="6"
@@ -33,26 +33,27 @@
             <b-col md="4"><b-button type="submit" variant="primary">Submit</b-button><b-button type="reset" variant="danger">Reset</b-button></b-col>
         </b-row>
 
-        <b-alert class="m-5" variant="success" show v-if="successNewList">New list successful created!</b-alert>
-        <b-alert class="m-5" variant="danger" show v-if="error">List information incorrect or the list may already exists!</b-alert>
+        <b-alert class="m-5" variant="success" show v-if="successNewClub">New club successful created!</b-alert>
+        <b-alert class="m-5" variant="danger" show v-if="error">Club information incorrect or the list may already exists!</b-alert>
     </b-form>
+    {{datos}}
 </b-container>
 </div>
 </template>
 
 <script>
-  import {APIListService} from '../APIListService';
+  import {APIClubService} from '../APIClubService';
   import Vue from 'vue'
 
   export default {
     data() {
       return {
         form: {
-          list_name: "",
-          list_description: ""
+          club_name: "",
+          club_description: ""
         },
         datos: "",
-        successNewList : false,
+        successNewClub : false,
         error : false,
         show: true
       }
@@ -66,24 +67,24 @@
       onSubmit(e) {
         e.preventDefault();
         var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
-        const apiService = new APIListService();
+        const apiService = new APIClubService();
         Vue.set(this.form, "user_id", idUser);
         var data = apiService.createList(JSON.stringify(this.form), idUser);
         data.then(result => {
             if (result.status == 201) {
-                this.successNewList = true;
+                this.successNewClub = true;
                 this.onReset();
                 this.error = false;
             } else {
-                this.successNewList = false;
+                this.successNewClub = false;
                 this.error = true;
-            }}).catch(error => {console.log(error),this.error = true; this.successNewList = false;})
+            }}).catch(error => {console.log(error),this.error = true; this.successNewClub = false;})
       },
 
       onReset() {
         // Reset our form values
-        this.form.list_name = "",
-        this.form.list_description = "",
+        this.form.club_name = "",
+        this.form.club_description = "",
         this.$nextTick(() => {
           this.show = true
         })

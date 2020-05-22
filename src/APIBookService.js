@@ -43,4 +43,25 @@ export class APIBookService {
             headers: headersUpdate
         }).then((response) => response).catch( error => { console.log(error); });
     }
+
+    async createReview(review){
+        const url = `${API_URL}/reviews`;
+        return await axios.post(url, review, {
+            headers: headers
+        });
+    }
+
+    async hasUserReview(idUser, idBook) {
+        const url = `${API_URL}/reviews?user_id=` + idUser + `&book_id=` + idBook;
+        return await axios.get(url, {
+            headers: headersUpdate
+        }).then((response) => response).catch( error => { console.log(error); });
+    }
+
+    async getReviewsOfBook(limit, offset, bookID) {
+        const url = `${API_URL}/reviews/` + bookID + `?limit=`+limit+'&offset='+offset;
+        return await axios.get(url, {
+            headers: headers
+        }).then((response) => response).catch( error => { console.log(error); });
+    }
 }

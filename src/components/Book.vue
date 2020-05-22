@@ -48,23 +48,18 @@
                         <div class="card-header"><h5>Reviews</h5></div>
                         <div class="card-body">
                             <CreateReview/>
+                        
+                            <b-row class="mt-4 book-details">
+                                <b-col md="12">
+                                    <Review/>
+                                </b-col>
+                            </b-row>
                         </div>
                     </div>
                    
                 </b-col>
             </b-row>
-
-            <b-row class="mt-4 book-details">
-                <b-col md="12">
-                    <Review/>
-                </b-col>
-            </b-row>
-
-
     </b-container>
-    
-    
-    
     
     <b-modal
       id="modal"
