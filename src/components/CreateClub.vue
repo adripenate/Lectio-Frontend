@@ -68,8 +68,8 @@
         e.preventDefault();
         var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
         const apiService = new APIClubService();
-        Vue.set(this.form, "user_id", idUser);
-        var data = apiService.createList(JSON.stringify(this.form), idUser);
+        Vue.set(this.form, "creator", idUser);
+        var data = apiService.createClub(JSON.stringify(this.form));
         data.then(result => {
             if (result.status == 201) {
                 this.successNewClub = true;

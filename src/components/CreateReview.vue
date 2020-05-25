@@ -60,7 +60,6 @@
     methods: {
       onSubmit(e) {
         e.preventDefault();
-        alert(JSON.stringify(this.form));
         var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
         var idBook = this.$route.params.id;
 

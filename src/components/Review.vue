@@ -9,11 +9,11 @@
                         </template>
                         <b-container>
                             <b-row>
-                                <b-col md="2">
+                                <b-col md="3">
                                     <h5 class="mt-0">{{ review.user_name }}</h5>
                         
                                     <p class="small">
-                                        {{ review.date}}
+                                        {{ review.created_at}}
                                     </p>
                                 </b-col>
 

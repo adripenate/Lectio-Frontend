@@ -21,7 +21,10 @@ const headersUpdate = {
 
 export class APIBookService {
 
-    constructor(){}
+    constructor(){
+        headers.Authorization = localStorage.getItem("token");
+        headersUpdate.Authorization = localStorage.getItem("token");
+    }
 
     async createBook(book){
         const url = `${API_URL}/books`;
