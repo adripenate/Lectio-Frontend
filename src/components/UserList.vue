@@ -68,7 +68,8 @@
               this.showTable = true;
               this.text = '';
             }});
-        },
+        }, 
+        
         setUserAndShowModal(item, index, button) {
           this.itemIndex = index
           this.$root.$emit('bv::show::modal', this.infoModal.id, button)
