@@ -3,6 +3,7 @@
     <b-container class="bv-row">
         <h1 class="title">Create a new club</h1>
         <b-form @submit="onSubmit" @reset="onReset" v-if="show" header='Add a new book'>
+        
         <b-row>
             <b-col md="2" offset="2"><label for="name-field">Name:</label></b-col>
             <b-col md="6">
