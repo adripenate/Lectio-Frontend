@@ -99,18 +99,9 @@
                     sortable: false
                 },
                 {
-                    key: 'club_description',
-                    sortable: false
-                },
-                {
                     key: 'book_id',
                     label: 'Weekly book',
                     sortable: false
-                },
-                {
-                    key: 'num_subscribers',
-                    label: 'Subscriptors',
-                    sortable: true
                 },
                 {
                     key: 'suscription',

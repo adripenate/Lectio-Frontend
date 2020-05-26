@@ -10,18 +10,18 @@
                     small 
                     :fields="fields"
                     striped responsive="sm" @row-clicked="myRowClickHandler" v-if="!noClubs">
+
                 <template v-slot:cell(book_id)="row">
                     <b-button v-if="row.item.book_id != null" variant="success" pill size="sm" @click="getBookAndShowModal(row.item, row.index, $event.target)" class="mr-2" ref="btnShow">
                         <b-icon icon="book"></b-icon> See book
                     </b-button>
-                    <b-alert class="m-1" variant="warning" show v-else>No book yet</b-alert>
+                    <b-alert class="m-1 warning-bookClub" variant="warning" show v-else>No book yet</b-alert>
                 </template>
 
-                <template v-slot:cell(suscription)="row">
-
-                    <b-button variant="primary" pill size="sm" @click="suscribe(row.item, row.index, $event.target)" class="mr-2" ref="btnShow" v-if="!isUserSuscribed(row.item.id)">Suscribe</b-button>
-                    <b-button variant="danger" pill size="sm" @click="unsuscribe(row.item, row.index, $event.target)" class="mr-2" ref="btnShow" v-else>Unsuscribe</b-button>
-               
+                <template v-slot:cell(set_book)="">
+                    <b-button variant="success" pill size="sm" @click="getBooksAndShowModal(row.item, row.index, $event.target)" class="mr-2" ref="btnShow">
+                        <b-icon icon="book"></b-icon> Set book
+                    </b-button>
                 </template>
             </b-table>
             <b-alert class="m-5" variant="danger" show v-if="noClubs">There are no clubs yet</b-alert>
@@ -58,6 +58,24 @@
         </b-container>
     </b-modal>
 
+    <b-modal :id="setBookModal.id" :title="setBookModal.title" button-size="md" size="lg">
+        <b-container>
+            <b-row class="mt-12 justify-content-md-center">
+                <b-col>
+                    <h4>Title</h4>
+                    <p>
+                        {{book.title}}
+                    </p>
+                    <h4>Sinopsis</h4>
+                    <p>
+                        {{book.synopsis | truncate(10, '...')}}
+                    </p>
+                    <a :href="'/book/'+ bookId">Read more...</a>
+                </b-col>
+            </b-row>
+        </b-container>
+    </b-modal>
+
     <b-modal :id="subModal.id" :title="subModal.title" button-size="sm" size="sm" ok-only>
         <b-alert class="m-2" variant="success" show v-if="successSuscribed">Suscribed</b-alert>
         <b-alert class="m-2" variant="success" show v-if="successUnsuscribed">Unsuscribed</b-alert>
@@ -79,6 +97,10 @@
                 id: 'info-modal',
                 title: 'Weekly book'
             },
+            setBookModal: {
+                id: 'set-modal',
+                title: 'Set book'
+            },
             subModal: {
                 id: 'sub-modal',
                 title: 'Message'
@@ -99,22 +121,13 @@
                     sortable: false
                 },
                 {
-                    key: 'club_description',
-                    sortable: false
-                },
-                {
                     key: 'book_id',
                     label: 'Weekly book',
                     sortable: false
                 },
                 {
-                    key: 'num_subscribers',
-                    label: 'Subscriptors',
-                    sortable: true
-                },
-                {
-                    key: 'suscription',
-                    label: 'Suscription',
+                    key: 'set_book',
+                    label: 'Set a book',
                     sortable: false
                 }],
             datos : ""
@@ -137,6 +150,12 @@
           this.getBookData(item.book_id);
           this.$root.$emit('bv::show::modal', this.infoModal.id, button)
         },
+
+        getBooksAndShowModal(item, index, button) {
+            this.getBookData(item.book_id);
+            this.$root.$emit('bv::show::modal', this.infoModal.id, button)
+        },
+
         getBookData(id){
             var apiBookService = new APIBookService();
             apiBookService.getBook(id).then(result => {
@@ -149,57 +168,13 @@
                 }
             })
         },
+
+        setNewBook(){
+
+        },
+
         imageUrlAlt(event) {
             event.target.src = this.images.sample;
-        },
-        isUserSuscribed(clubId) {
-            console.log(clubId)
-            /*const apiService = new APIClubService();
-            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
-            var data = apiService.isSuscribed(idUser, clubId);
-            data.then(result => {
-                if (result.status == 200) {
-                    return true;
-                } else {
-                    return false;
-                }}).catch(error => {console.log(error)})*/
-            return true;
-        },
-        suscribe(clubId, index, button) {
-            console.log(clubId)
-            alert("In");
-            this.successSuscribed = true;
-            this.successUnsuscribed = false;
-            this.$root.$emit('bv::show::modal', this.subModal.id, button)
-            /*const apiService = new APIClubService();
-            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
-            var data = apiService.suscribe(idUser, clubId);
-            data.then(result => {
-                if (result.status == 200) {
-                    this.successSuscribed = true;
-                    this.successUnsuscribed = false;
-                } else {
-                    this.error = true;
-                }}).catch(error => {console.log(error);this.error = true})*/
-        },
-        unsuscribe(clubId, index, button) {
-            console.log(clubId)
-            alert("Out");
-            this.successSuscribed = false;
-            this.successUnsuscribed = true;
-            this.$root.$emit('bv::show::modal', this.subModal.id, button)
-
-            /*const apiService = new APIClubService();
-            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
-            var data = apiService.unsuscribe(idUser, clubId);
-            data.then(result => {
-                if (result.status == 200) {
-                    this.successSuscribed = false;
-                    this.successUnsuscribed = true;
-                } else {
-                    this.error = true;
-                }}).catch(error => {console.log(error);this.error = true})*/
-            return true;
         },
         
         getClubs() {
@@ -214,6 +189,7 @@
                     this.noClubs = true;
                 }}).catch(error => {console.log(error), this.noClubs = true;})
         },
+
         test() {
             this.getBooks(this.limit,this.currentPage);
         }     
@@ -226,7 +202,6 @@
     margin-top: 50px;
     color:  black
 }
-
 .title{
     padding: 5vh;
 }

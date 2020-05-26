@@ -30,6 +30,10 @@
             <b-navbar-nav>
               <b-nav-item href="/createClub">Create club</b-nav-item>
             </b-navbar-nav>
+
+            <b-navbar-nav>
+              <b-nav-item href="/manageClubs">Manage clubs</b-nav-item>
+            </b-navbar-nav>
           </div>
 
           <b-navbar-nav>
@@ -46,7 +50,11 @@
             </b-navbar-nav>
 
             <b-navbar-nav>
-              <b-nav-item href="/clubs">My clubs</b-nav-item>
+              <b-nav-item href="/clubs">Explore clubs</b-nav-item>
+            </b-navbar-nav>
+
+            <b-navbar-nav>
+              <b-nav-item href="/myClubs">My clubs</b-nav-item>
             </b-navbar-nav>
           </div>
           

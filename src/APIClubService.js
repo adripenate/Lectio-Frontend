@@ -29,4 +29,11 @@ export class APIClubService {
             headers: headers
         });
     }
+
+    async getClubs() {
+        const url = `${API_URL}/clubs`;
+        return await axios.get(url, {
+            headers: headers
+        }).then((response) => response).catch( error => { console.log(error); });
+    }
 }

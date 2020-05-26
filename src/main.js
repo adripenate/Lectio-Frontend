@@ -20,7 +20,9 @@ import Book from './components/Book.vue'
 import Lists from './components/Lists.vue'
 import AddList from './components/AddList.vue'
 import CreateClub from './components/CreateClub.vue'
-import Clubs from './components/Clubs.vue' 
+import Clubs from './components/Clubs.vue'
+import MyClubs from './components/UserClubs.vue'
+import ManageClubs from './components/ManageClubs.vue'  
 
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
@@ -43,7 +45,9 @@ const router = new VueRouter({
     { path: '/userList', component: UserList, name : "userList", meta: {title: "Lectio - Home"} },
     { path: '/createList', component: AddList, name : "createList", meta: {title: "Lectio - Create List"} },
     { path: '/createClub', component: CreateClub, name : "createClub", meta: {title: "Lectio - Create Club"} },
-    { path: '/clubs', component: Clubs, name : "clubs", meta: {title: "Lectio - Clubs"} }
+    { path: '/clubs', component: Clubs, name : "clubs", meta: {title: "Lectio - Clubs"} },
+    { path: '/myClubs', component: MyClubs, name : "myClubs", meta: {title: "Lectio - My clubs"} },
+    { path: '/manageClubs', component: ManageClubs, name : "manageClubs", meta: {title: "Lectio - Manage clubs"} }
   ]
 })
 

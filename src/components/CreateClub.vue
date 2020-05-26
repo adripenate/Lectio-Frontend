@@ -35,7 +35,7 @@
         </b-row>
 
         <b-alert class="m-5" variant="success" show v-if="successNewClub">New club successful created!</b-alert>
-        <b-alert class="m-5" variant="danger" show v-if="error">Club information incorrect or the list may already exists!</b-alert>
+        <b-alert class="m-5" variant="danger" show v-if="error">Club information incorrect or the club may already exists!</b-alert>
     </b-form>
     {{datos}}
 </b-container>
@@ -70,6 +70,7 @@
         var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
         const apiService = new APIClubService();
         Vue.set(this.form, "creator", idUser);
+        Vue.set(this.form, "is_private", false);
         var data = apiService.createClub(JSON.stringify(this.form));
         data.then(result => {
             if (result.status == 201) {
