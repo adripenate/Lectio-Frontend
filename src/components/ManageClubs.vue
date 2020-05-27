@@ -9,7 +9,7 @@
                     :current-page="currentPage"
                     small 
                     :fields="fields"
-                    striped responsive="sm" @row-clicked="myRowClickHandler" v-if="!noClubs">
+                    striped responsive="sm" v-if="!noClubs">
 
                 <template v-slot:cell(book_id)="row">
                     <b-button v-if="row.item.book_id != null" variant="success" pill size="sm" @click="getBookAndShowModal(row.item, row.index, $event.target)" class="mr-2" ref="btnShow">
@@ -19,7 +19,7 @@
                 </template>
 
                 <template v-slot:cell(set_book)="">
-                    <b-button variant="success" pill size="sm" @click="getBooksAndShowModal(row.item, row.index, $event.target)" class="mr-2" ref="btnShow">
+                    <b-button variant="success" pill size="sm" @click="getBooksAndShowModal($event.target)" class="mr-2" ref="btnShow">
                         <b-icon icon="book"></b-icon> Set book
                     </b-button>
                 </template>
@@ -37,22 +37,66 @@
                 </b-col>
             </b-row>
     </b-container>
-    <b-modal :id="infoModal.id" :title="infoModal.title" button-size="md" size="lg" ok-only>
+    <b-modal :id="infoModal.id" :title="infoModal.title" button-size="md" size="lg"  @ok="setBook">
         <b-container>
             <b-row class="mt-12 justify-content-md-center">
-                <b-col md="4">
-                    <b-img class="book-cover" :src="'http://covers.openlibrary.org/b/isbn/'+ book.isbn + '-L.jpg?default=false' || image.sample" fluid alt="Responsive image" @error="imageUrlAlt"></b-img>         
-                </b-col>
                 <b-col>
-                    <h4>Title</h4>
-                    <p>
-                        {{book.title}}
-                    </p>
-                    <h4>Sinopsis</h4>
-                    <p>
-                        {{book.synopsis | truncate(10, '...')}}
-                    </p>
-                    <a :href="'/book/'+ bookId">Read more...</a>
+                    <b-form-group
+                        label="Filter"
+                        label-cols-sm="3"
+                        label-align-sm="right"
+                        label-size="sm"
+                        label-for="filterInput"
+                        class="mb-0"
+                    >
+                        <b-input-group size="sm">
+                            <b-form-input
+                                v-model="filter"
+                                type="search"
+                                id="filterInput"
+                                placeholder="Type to Search"
+                            >
+                            </b-form-input>
+                            <b-input-group-append>
+                                <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                            </b-input-group-append>
+                        </b-input-group>
+                    </b-form-group>
+                </b-col>
+            </b-row>
+            <b-row class="mt-12 justify-content-md-center">
+                <b-col>
+                    <b-table
+                        show-empty
+                        small
+                        stacked="md"
+                        selectable
+                        :select-mode="selectMode"
+                        :items="books"
+                        :fields="bookFields"
+                        :current-page="booksCurrentPage"
+                        :per-page="booksPerPage"
+                        :filter="filter"
+                        @row-clicked="selectBook"
+                    >
+                    </b-table>
+                </b-col>
+            </b-row>
+            <b-row class="mt-12 justify-content-md-center">
+                <b-col>
+                    <b-pagination
+                        v-model="booksCurrentPage"
+                        :total-rows="books.length"
+                        :per-page="booksPerPage"
+                        align="fill"
+                        size="sm"
+                        class="my-0"
+                        ></b-pagination>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-alert class="m-5" variant="danger" show v-if="noSelectedBook">You have to select a book</b-alert>
                 </b-col>
             </b-row>
         </b-container>
@@ -75,12 +119,6 @@
             </b-row>
         </b-container>
     </b-modal>
-
-    <b-modal :id="subModal.id" :title="subModal.title" button-size="sm" size="sm" ok-only>
-        <b-alert class="m-2" variant="success" show v-if="successSuscribed">Suscribed</b-alert>
-        <b-alert class="m-2" variant="success" show v-if="successUnsuscribed">Unsuscribed</b-alert>
-        <b-alert class="m-2" variant="danger" show v-if="error">Error</b-alert>
-    </b-modal>
 </div>
 </template>
 
@@ -93,6 +131,11 @@
         return {
             perPage: 6,
             currentPage: 1,
+            booksPerPage: 6,
+            booksCurrentPage: 1,
+            selectMode : 'single',
+            filter : '',
+            noSelectedBook : false,
             infoModal: {
                 id: 'info-modal',
                 title: 'Weekly book'
@@ -101,15 +144,11 @@
                 id: 'set-modal',
                 title: 'Set book'
             },
-            subModal: {
-                id: 'sub-modal',
-                title: 'Message'
-            },
-            successSuscribed : false,
-            successUnsuscribed : false,
             error : false,
+            books : [],
             book : {"synopsis" : ""},
-            boodId : 0,
+            bookId : 0,
+            selectedBookId : 0,
             noClubs : false,
             imageError : false,
             images: {
@@ -129,6 +168,25 @@
                     key: 'set_book',
                     label: 'Set a book',
                     sortable: false
+                }],
+            bookFields: [{
+                    key: 'title',
+                    sortable: true
+                },
+                {
+                    key: 'author',
+                    label: 'Author',
+                    sortable: true
+                },
+                {
+                    key: 'isbn',
+                    label: 'ISBN',
+                    sortable: false
+                },
+                {
+                    key: 'pages',
+                    label: 'Pages',
+                    sortable: true
                 }],
             datos : ""
         }
@@ -151,16 +209,16 @@
           this.$root.$emit('bv::show::modal', this.infoModal.id, button)
         },
 
-        getBooksAndShowModal(item, index, button) {
-            this.getBookData(item.book_id);
+        getBooksAndShowModal(button) {
+            this.getBooks();
+            this.selectedBookId = -1;
             this.$root.$emit('bv::show::modal', this.infoModal.id, button)
         },
-
         getBookData(id){
             var apiBookService = new APIBookService();
             apiBookService.getBook(id).then(result => {
                 if (result.status == 200) {
-                    this.book = result.data;
+                    this.book = result.data.books;
                     this.bookId = id;
                 } else {
                     alert("An error has ocurred");
@@ -168,15 +226,38 @@
                 }
             })
         },
-
-        setNewBook(){
-
+        getBooks() {
+            const apiService = new APIBookService();
+            var data = apiService.getBooks(9999,0);
+            data.then(result => {
+                if (result.status == 200) {
+                    this.datos = JSON.stringify(result.data);
+                    this.books = result.data.books;
+                    this.noBooks = false;
+                } else {
+                    this.books = "";
+                    this.noBooks = true;
+                }}).catch(error => {console.log(error),this.noBooks = true;})
         },
-
+        selectBook(row){
+            if (this.selectedBookId == row.id) {
+                this.selectedBookId = -1;
+            } else {
+                this.selectedBookId = row.id;
+            }
+        },
+        setBook(bvModalEvt) {
+            if (this.selectedBookId > 0) {
+                this.noSelectedBook = false;
+                alert("Guardar libro con id " + this.selectedBookId);
+            } else {
+                this.noSelectedBook = true;
+                bvModalEvt.preventDefault()
+            }
+        },
         imageUrlAlt(event) {
             event.target.src = this.images.sample;
         },
-        
         getClubs() {
             const apiService = new APIClubService();
             var data = apiService.getClubs();

@@ -2,7 +2,7 @@
 <div class="hello">
     <b-container>
         <h1 class="title">Clubs</h1>
-        <div> 
+        <div v-if="items.length > 0"> 
             <b-table id="my-table"
                     :items="items"
                     :per-page="perPage"
@@ -18,25 +18,29 @@
                 </template>
 
                 <template v-slot:cell(suscription)="row">
-
-                    <b-button variant="primary" pill size="sm" @click="suscribe(row.item, row.index, $event.target)" class="mr-2" ref="btnShow" v-if="!isUserSuscribed(row.item.id)">Suscribe</b-button>
-                    <b-button variant="danger" pill size="sm" @click="unsuscribe(row.item, row.index, $event.target)" class="mr-2" ref="btnShow" v-else>Unsuscribe</b-button>
-               
+                    <b-button variant="danger" pill size="sm" @click="unsuscribe(row.item.id, $event.target)" class="mr-2" ref="btnShow">Unsuscribe</b-button>
                 </template>
             </b-table>
-            <b-alert class="m-5" variant="danger" show v-if="noClubs">There are no clubs yet</b-alert>
+        
         </div>
+        <b-alert class="m-5" variant="danger" show v-else>You are not suscribed to any club!</b-alert>
         <b-row class="mt-12 justify-content-md-center" v-if="this.items.length != 0  && this.items.length > perPage">
-                <b-col md="2">
-                    <b-pagination
-                        v-model="currentPage"
-                        :total-rows="this.items.length"
-                        :per-page="perPage"
-                        aria-controls="my-table">
-                    </b-pagination>
-                </b-col>
-            </b-row>
+            <b-col md="2">
+                <b-pagination
+                    v-model="currentPage"
+                    :total-rows="this.items.length"
+                    :per-page="perPage"
+                    aria-controls="my-table">
+                </b-pagination>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col>
+                <b-alert class="m-2" variant="success" show v-if="successUnsuscribed">Unsuscribed</b-alert>
+            </b-col>
+        </b-row>
     </b-container>
+
     <b-modal :id="infoModal.id" :title="infoModal.title" button-size="md" size="lg" ok-only>
         <b-container>
             <b-row class="mt-12 justify-content-md-center">
@@ -59,9 +63,7 @@
     </b-modal>
 
     <b-modal :id="subModal.id" :title="subModal.title" button-size="sm" size="sm" ok-only>
-        <b-alert class="m-2" variant="success" show v-if="successSuscribed">Suscribed</b-alert>
-        <b-alert class="m-2" variant="success" show v-if="successUnsuscribed">Unsuscribed</b-alert>
-        <b-alert class="m-2" variant="danger" show v-if="error">Error</b-alert>
+        <b-alert class="m-2" variant="danger" show v-if="error">An error has ocurred</b-alert>
     </b-modal>
 </div>
 </template>
@@ -120,7 +122,7 @@
 
     mounted() {
       this.$emit("authenticated", true);
-      this.getClubs();
+      this.getMyClubs();
     },
 
     methods: {
@@ -143,59 +145,29 @@
         imageUrlAlt(event) {
             event.target.src = this.images.sample;
         },
-        isUserSuscribed(clubId) {
-            console.log(clubId)
-            /*const apiService = new APIClubService();
-            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
-            var data = apiService.isSuscribed(idUser, clubId);
-            data.then(result => {
-                if (result.status == 200) {
-                    return true;
-                } else {
-                    return false;
-                }}).catch(error => {console.log(error)})*/
-            return true;
-        },
-        suscribe(clubId, index, button) {
-            console.log(clubId)
-            alert("In");
-            this.successSuscribed = true;
-            this.successUnsuscribed = false;
-            this.$root.$emit('bv::show::modal', this.subModal.id, button)
-            /*const apiService = new APIClubService();
-            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
-            var data = apiService.suscribe(idUser, clubId);
-            data.then(result => {
-                if (result.status == 200) {
-                    this.successSuscribed = true;
-                    this.successUnsuscribed = false;
-                } else {
-                    this.error = true;
-                }}).catch(error => {console.log(error);this.error = true})*/
-        },
-        unsuscribe(clubId, index, button) {
-            console.log(clubId)
-            alert("Out");
-            this.successSuscribed = false;
-            this.successUnsuscribed = true;
-            this.$root.$emit('bv::show::modal', this.subModal.id, button)
-
-            /*const apiService = new APIClubService();
+        unsuscribe(clubId, button) {
+            const apiService = new APIClubService();
             var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
             var data = apiService.unsuscribe(idUser, clubId);
             data.then(result => {
                 if (result.status == 200) {
                     this.successSuscribed = false;
                     this.successUnsuscribed = true;
+                    this.getMyClubs();
                 } else {
                     this.error = true;
-                }}).catch(error => {console.log(error);this.error = true})*/
-            return true;
+                    this.$root.$emit('bv::show::modal', this.subModal.id, button)
+                }   
+            }).catch(error => {
+                console.log(error);
+                this.$root.$emit('bv::show::modal', this.subModal.id, button);
+                this.error = true
+            })
         },
-        
-        getClubs() {
+        getMyClubs() {
             const apiService = new APIClubService();
-            var data = apiService.getClubs();
+            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
+            var data = apiService.getMyClubs(idUser);
             data.then(result => {
                 if (result.status == 200) {
                     this.items = result.data;
