@@ -16,7 +16,6 @@
                                         {{ review.created_at}}
                                     </p>
                                 </b-col>
-
                                 <b-col>
                                     <b-form-rating id="rating-disabled" variant="warning" :value="review.punctuation" disabled inline  class="mb-2 rate"></b-form-rating>
                                 </b-col>
