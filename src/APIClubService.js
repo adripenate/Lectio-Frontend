@@ -59,4 +59,18 @@ export class APIClubService {
             headers: headersUpdate
         });
     }
+
+    async getCreatedClubs(idUser) {
+        const url = `${API_URL}/clubs/librarian/`;
+        return await axios.get(url+idUser, {
+            headers: headers
+        }).then((response) => response).catch( error => { console.log(error); });
+    }
+
+    async deleteClub(id) {
+        const url = `${API_URL}/clubs/`;
+        return await axios.delete(url + id, {
+            headers: headersUpdate
+        }).catch( error => { console.log(error); });
+    }
 }

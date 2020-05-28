@@ -2,6 +2,39 @@
 <div class="hello">
     <b-container>
         <h1 class="title">Books</h1>
+            <b-row>
+                <b-col md="8">
+                    <b-form-input class="mr-sm-2" placeholder="Search" 
+                        v-on:keypress="searchBooks"
+                        v-model="book_name_search">
+                    </b-form-input>
+                </b-col>
+                <b-col md="4">
+                    <b-button variant="success" pill size="sm" @click="filters = !filters" class="mr-2" ref="btnShow">
+                        Advanced filters
+                    </b-button>
+                </b-col>
+            </b-row>
+            <b-row v-if="filters" class="mt-3">
+                <b-col md="8">
+                    <b-form-input class="mr-sm-2" placeholder="Author name" 
+                        v-on:keypress="searchBooks"
+                        v-model="book_author_search">
+                    </b-form-input>
+                    <b-form-input class="mr-sm-2 mt-1" placeholder="Publisher name" 
+                        v-on:keypress="searchBooks"
+                        v-model="book_publisher_search">
+                    </b-form-input>
+                    <b-form-select
+                        id="genre-field"
+                        v-model="book_genres_search"
+                        :options="genres_options"
+                        v-on:change="searchBooks"
+                        size=3
+                        class="mt-1"
+                    ></b-form-select>
+                </b-col>
+            </b-row>
             <b-row class="mt-10 justify-content-md-center"> 
                 <b-col class="book-element" v-for="book in items.books" :key="book" md="3">
                     <b-row class="mt-4 justify-content-md-center" v-on:click="goToBook(book.id)"> 
@@ -16,7 +49,6 @@
                     </b-row>
                     
                 </b-col>
-                
                 
                 <b-alert class="m-5" variant="danger" show v-if="noBooks">There are no books on the catalogue!</b-alert>
             </b-row>
@@ -45,10 +77,18 @@
             noBooks : false,
             imageError : false,
             currentPage: 1,
+            filters: false,
             items : {},
             images: {
                 sample: require('../assets/missingbook.png')
             },
+            book_name_search : "",
+            book_author_search: "",
+            book_publisher_search: "",
+            book_genres_search: "",
+            genres_options: [{ value: "", text: 'All genres' },'Action', "Fantasy", "Young adult", "Adventure", 
+                "Fiction", "Paranormal", "Chick-lit", "Short story", "Poetry", "Science fiction", "Romance", "Comedy", 
+                "Thriller", "Mystery", "Horror", "Non fiction", "Historical fiction"],
             datos : ""
         }
     },
@@ -74,6 +114,25 @@
                     this.items = "";
                     this.noBooks = true;
                 }}).catch(error => {console.log(error),this.noBooks = true;})
+        },
+        searchBooks(){
+            const apiService = new APIBookService();
+            if(this.book_name_search == "" && this.book_author_search == ""
+                && this.book_publisher_search == "" && this.book_genres_search == ""){
+                this.getBooks(this.limit,this.currentPage);
+            }else{
+                var data = apiService.searchBookByName(this.book_name_search, this.book_author_search,
+                                            this.book_publisher_search, this.book_genres_search);
+                data.then(result => {
+                if (result.status == 200) {
+                    this.datos = JSON.stringify(result.data);
+                    this.items.books = result.data;
+                    this.noBooks = false;
+                } else {
+                    this.items = "";
+                    this.noBooks = true;
+                }}).catch(error => {console.log(error), this.noBooks = true;})
+            }
         },
         imageUrlAlt(event) {
             event.target.src = this.images.sample;

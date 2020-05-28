@@ -61,6 +61,15 @@ export class APIBookService {
         }).then((response) => response).catch( error => { console.log(error); });
     }
 
+    ///api/books/search?title={title}&author={author}&genre={genre}&publisher={publisher}
+    async searchBookByName(title, author, publisher, genre) {
+        const url = `${API_URL}/books/search?title=` + title + '&author=' + author
+                    + '&genre=' + genre + '&publisher=' + publisher;
+        return await axios.get(url, {
+            headers: headers
+        }).then((response) => response).catch( error => { console.log(error); });
+    }
+
     async getReviewsOfBook(limit, offset, bookID) {
         const url = `${API_URL}/reviews/` + bookID + `?limit=`+limit+'&offset='+offset;
         return await axios.get(url, {

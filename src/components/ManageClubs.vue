@@ -8,6 +8,7 @@
                     :per-page="perPage"
                     :current-page="currentPage"
                     small 
+                    show-empty
                     :fields="fields"
                     striped responsive="sm" v-if="!noClubs">
 
@@ -21,6 +22,12 @@
                 <template v-slot:cell(set_book)="">
                     <b-button variant="success" pill size="sm" @click="getBooksAndShowModal($event.target)" class="mr-2" ref="btnShow">
                         <b-icon icon="book"></b-icon> Set book
+                    </b-button>
+                </template>
+
+                <template v-slot:cell(delete_club)="row">
+                    <b-button variant="success" pill size="sm" @click="showModalDelete(row.item.id, $event.target)" class="mr-2" ref="btnShow">
+                        <b-icon icon="trash"></b-icon> Delete club
                     </b-button>
                 </template>
             </b-table>
@@ -40,6 +47,9 @@
     <b-modal :id="infoModal.id" :title="infoModal.title" button-size="md" size="lg"  @ok="setBook">
         <b-container>
             <b-row class="mt-12 justify-content-md-center">
+                <b-form-select v-model="selectedTime" :options="optionsSelect"></b-form-select>
+            </b-row>
+            <b-row class="mt-2 justify-content-md-center">
                 <b-col>
                     <b-form-group
                         label="Filter"
@@ -64,7 +74,7 @@
                     </b-form-group>
                 </b-col>
             </b-row>
-            <b-row class="mt-12 justify-content-md-center">
+            <b-row class="mt-2 justify-content-md-center">
                 <b-col>
                     <b-table
                         show-empty
@@ -119,6 +129,24 @@
             </b-row>
         </b-container>
     </b-modal>
+
+    <b-modal :id="deleteModal.id" :title="deleteModal.title" button-size="sm" size="sm">
+          <p class="my-2">Do you want to delete this club?</p>
+
+          <template v-slot:modal-footer="{ ok, cancel }">
+            <!-- Emulate built in modal footer ok and cancel button actions -->
+            <b-button size="sm" variant="danger" @click="deleteClub()">
+              Confirm
+            </b-button>
+            <b-button size="sm" @click="cancel()">
+              Cancel
+            </b-button>
+          </template>
+    </b-modal>
+
+    <b-modal id="modal-multi-2" title="Delete club" ok-only>
+        <p class="my-2">{{ msg }}</p>
+    </b-modal>
 </div>
 </template>
 
@@ -144,10 +172,15 @@
                 id: 'set-modal',
                 title: 'Set book'
             },
+            deleteModal: {
+                id: 'delete-modal',
+                title: 'Delete club'
+            },
             error : false,
             books : [],
             book : {"synopsis" : ""},
             bookId : 0,
+            clubID: -1,
             selectedBookId : 0,
             noClubs : false,
             imageError : false,
@@ -167,6 +200,11 @@
                 {
                     key: 'set_book',
                     label: 'Set a book',
+                    sortable: false
+                },
+                {
+                    key: 'delete_club',
+                    label: 'Delete club',
                     sortable: false
                 }],
             bookFields: [{
@@ -188,6 +226,12 @@
                     label: 'Pages',
                     sortable: true
                 }],
+            selectedTime: "Weekly",
+            optionsSelect: [
+                { value: 'Weekly', text: 'Weekly' },
+                { value: 'Monthly', text: 'Monthly' }
+            ],
+            msg: "",
             datos : ""
         }
     },
@@ -214,6 +258,26 @@
             this.selectedBookId = -1;
             this.$root.$emit('bv::show::modal', this.infoModal.id, button)
         },
+
+        showModalDelete(club_ID, button){
+            this.clubID = club_ID;
+            this.$root.$emit('bv::show::modal', this.deleteModal.id, button)
+        },
+
+        deleteClub(){
+            var apiService = new APIClubService();
+            apiService.deleteClub(this.clubID).then(result => {
+                if (result.status == 200) {
+                    this.getClubs();
+                    this.msg = "Successful deleted ";
+                } else {
+                    this.msg = "An error has ocurred while trying to remove an club";
+                }
+                this.$root.$emit('bv::hide::modal', this.deleteModal.id, '#btnShow')
+                this.$root.$emit('bv::show::modal', 'modal-multi-2', '#btnShow')
+            });
+        },
+
         getBookData(id){
             var apiBookService = new APIBookService();
             apiBookService.getBook(id).then(result => {
@@ -252,6 +316,10 @@
         setBook(bvModalEvt) {
             if (this.selectedBookId > 0) {
                 this.noSelectedBook = false;
+                if(this.selectedTime == "Weekly"){
+                    alert("holi")
+                }
+                
                 alert("Guardar libro con id " + this.selectedBookId);
             } else {
                 this.noSelectedBook = true;
@@ -263,7 +331,8 @@
         },
         getClubs() {
             const apiService = new APIClubService();
-            var data = apiService.getClubs();
+            var idUser = JSON.parse(localStorage.getItem("userInfo")).user_id;
+            var data = apiService.getCreatedClubs(idUser);
             data.then(result => {
                 if (result.status == 200) {
                     this.items = result.data;
