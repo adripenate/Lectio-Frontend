@@ -237,7 +237,10 @@
                 } else {
                     this.books = "";
                     this.noBooks = true;
-                }}).catch(error => {console.log(error),this.noBooks = true;})
+                }}).catch(error => {
+                    console.log(error),
+                    this.noBooks = true;
+                })
         },
         selectBook(row){
             if (this.selectedBookId == row.id) {
