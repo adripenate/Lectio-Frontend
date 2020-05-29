@@ -135,7 +135,6 @@
         this.$emit("authenticated", true);
         this.$emit("role", "Librarian");
     },
-
     methods: {
       onSubmit(e) {
         e.preventDefault();
