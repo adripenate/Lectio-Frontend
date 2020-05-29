@@ -73,7 +73,7 @@
   export default {
     data() {
         return {
-            limit : 4,
+            limit : 8,
             noBooks : false,
             imageError : false,
             currentPage: 1,

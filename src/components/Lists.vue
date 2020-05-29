@@ -5,7 +5,7 @@
                 <b-col md="4">
                     <b-list-group>
                         <b-list-group-item >
-                            <b-list-group-item v-for="(list, idx) in lists" :key="idx" @click="listId = list.list_id;getBooks(list.list_name)">{{list.list_name}}</b-list-group-item>
+                            <b-list-group-item v-for="(list, idx) in lists" :key="idx" @click="listId = list.list_id;getBooks(list.list_name)" class="my-list">{{list.list_name}}</b-list-group-item>
                         </b-list-group-item>
                     </b-list-group>
                 </b-col>
@@ -13,26 +13,17 @@
                 <b-col md="8">
                     <h5 class="title-list">{{list_name}}</h5>
                     <div> 
-                        <b-table :items="items" :fields="fields" striped responsive="sm" @row-clicked="myRowClickHandler" v-if="!no_books">
+                        <b-table :items="items" :fields="fields" striped responsive="sm" @row-clicked="myRowClickHandler" v-if="!no_books" class="book-list">
                             <template v-slot:cell(options)="row">
                                 <b-img class="book-cover-list" :src="'http://covers.openlibrary.org/b/isbn/'+ row.item.isbn + '-S.jpg?default=false' || image.sample" fluid alt="Responsive image" @error="imageUrlAlt"></b-img>
                             </template>
                             <template v-slot:cell(progress)="row">
-                                <b-form inline class="form-page" @submit="setNumberPages(row.item.id, $event)">
-                                    <div class="page-container">
-                                        <b-input
-                                        id="inline-form-input-name"
-                                        v-model="form.progress"
-                                        type="number"
-                                        min=0
-                                        :max="row.item.pages"
-                                        class="input-page"
-                                        placeholder=""
-                                        ></b-input>
-
-                                        <b-button type="submit" variant="primary">Save</b-button>
-                                    </div>
-                                </b-form>                          
+                                <b-button v-if="list_name != 'Finished'" variant="primary" pill size="sm" @click="showModal(row.item, $event.target)" class="mr-2" ref="btnShow" > 
+                                    Save progress
+                                </b-button> 
+                                <b-button variant="primary" pill size="sm" @click="showModal(row.item, $event.target)" class="mr-2" ref="btnShow" disabled v-else>
+                                    Save progress
+                                </b-button>            
                             </template>
                             <template v-slot:cell(delete)="row">
                                 <b-button variant="danger" pill size="sm" @click="deleteBook(row.item.id)" class="mr-2" ref="btnShow">
@@ -47,6 +38,23 @@
                 </b-col>
             </b-row>
         </b-container>
+        <b-modal :id="infoModal.id" :title="infoModal.title" button-size="sm" size="sm" hide-footer>
+          <b-form inline class="form-page" @submit="setNumberPages">
+            <div class="page-container">
+                <b-input
+                id="inline-form-input-name"
+                v-model="form.progress"
+                type="number"
+                min=0
+                :max="max"
+                class="input-page"
+                placeholder=""
+                ></b-input>
+
+                <b-button type="submit" variant="primary">Save</b-button>
+            </div>
+        </b-form>         
+        </b-modal>
     </div>
 </template>
 
@@ -65,9 +73,14 @@
         images: {
             sample: require('../assets/missingbook.png')
         },
+        infoModal: {
+          id: 'info-modal',
+          title: 'Save progress'
+        },
         form: {
           progress: 0
         },
+        max : 0,
         no_books: false,
         list_name: "",
         pages : false,
@@ -87,6 +100,11 @@
         },
         imageUrlAlt(event) {
             event.target.src = this.images.sample;
+        },
+        showModal(row,button) {
+            this.bookID = row.id;
+            this.max = row.progress;
+            this.$root.$emit('bv::show::modal', this.infoModal.id, button)
         },
         getBooks(name) {
             this.list_name = name;
@@ -119,11 +137,11 @@
                     this.getBooks(this.list_name);
                 } }).catch(error => {alert(error);});
         },
-        setNumberPages(id, e) {
-            e.preventDefault();
+        setNumberPages() {
+            
             var apiService = new APIListService();
             Vue.set(this.form, "list_id", this.listId);
-            Vue.set(this.form, "book_id", id);
+            Vue.set(this.form, "book_id", this.bookID);
             apiService.progress(JSON.stringify(this.form)).then((response) => {
                 if (response.status == 201) {
                     this.pages = false;
@@ -154,12 +172,15 @@
     max-width: 36px;
 }
 
-.input-page {
-    width: 75px !important;
-    margin: auto;
-}
-
 .page-container {
     text-align: center;
+}
+
+.my-list {
+    cursor: pointer;
+}
+
+.book-list td {
+    cursor: pointer;
 }
 </style>
