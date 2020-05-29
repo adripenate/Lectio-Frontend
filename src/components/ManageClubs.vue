@@ -241,7 +241,6 @@
             return text.substring(0, length) + suffix;
         },
     },
-
     mounted() {
       this.$emit("authenticated", true);
       this.getClubs();
