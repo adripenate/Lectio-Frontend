@@ -125,6 +125,7 @@
             var apiBookService = new APIListService();
             this.request_data.book_id = this.$route.params.id;
             this.request_data.list_id = listID;
+            alert(JSON.stringify(this.request_data));
             apiBookService.addBookTo(JSON.stringify(this.request_data)).then(result => {
                 if (result.status == 201) {
                     this.successAdded = true;

@@ -19,8 +19,8 @@
                     <b-alert class="m-1 warning-bookClub" variant="warning" show v-else>No book yet</b-alert>
                 </template>
 
-                <template v-slot:cell(set_book)="">
-                    <b-button variant="success" pill size="sm" @click="getBooksAndShowModal($event.target)" class="mr-2" ref="btnShow">
+                <template v-slot:cell(set_book)="row">
+                    <b-button variant="success" pill size="sm" @click="clubID = row.item.id;getBooksAndShowModal($event.target)" class="mr-2" ref="btnShow">
                         <b-icon icon="book"></b-icon> Set book
                     </b-button>
                 </template>
@@ -31,7 +31,7 @@
                     </b-button>
                 </template>
             </b-table>
-            <b-alert class="m-5" variant="danger" show v-if="noClubs">There are no clubs yet</b-alert>
+            <b-alert class="m-5" variant="success" show v-if="bookSetted">Book setted</b-alert>
         </div>
         <b-row class="mt-12 justify-content-md-center" v-if="this.items.length != 0  && this.items.length > perPage">
                 <b-col md="2">
@@ -44,7 +44,7 @@
                 </b-col>
             </b-row>
     </b-container>
-    <b-modal :id="infoModal.id" :title="infoModal.title" button-size="md" size="lg"  @ok="setBook">
+    <b-modal :id="setBookModal.id" :title="setBookModal.title" button-size="md" size="lg"  @ok="setBook">
         <b-container>
             <b-row class="mt-12 justify-content-md-center">
                 <b-form-select v-model="selectedTime" :options="optionsSelect"></b-form-select>
@@ -112,7 +112,7 @@
         </b-container>
     </b-modal>
 
-    <b-modal :id="setBookModal.id" :title="setBookModal.title" button-size="md" size="lg">
+    <b-modal :id="infoModal.id" :title="infoModal.title" button-size="md" size="lg">
         <b-container>
             <b-row class="mt-12 justify-content-md-center">
                 <b-col>
@@ -181,6 +181,7 @@
             book : {"synopsis" : ""},
             bookId : 0,
             clubID: -1,
+            bookSetted : false,
             selectedBookId : 0,
             noClubs : false,
             imageError : false,
@@ -255,7 +256,7 @@
         getBooksAndShowModal(button) {
             this.getBooks();
             this.selectedBookId = -1;
-            this.$root.$emit('bv::show::modal', this.infoModal.id, button)
+            this.$root.$emit('bv::show::modal', this.setBookModal.id, button)
         },
 
         showModalDelete(club_ID, button){
@@ -281,7 +282,7 @@
             var apiBookService = new APIBookService();
             apiBookService.getBook(id).then(result => {
                 if (result.status == 200) {
-                    this.book = result.data.books;
+                    this.book = result.data;
                     this.bookId = id;
                 } else {
                     alert("An error has ocurred");
@@ -315,16 +316,25 @@
         setBook(bvModalEvt) {
             if (this.selectedBookId > 0) {
                 this.noSelectedBook = false;
-                if(this.selectedTime == "Weekly"){
-                    alert("holi")
-                }
-                
-                alert("Guardar libro con id " + this.selectedBookId);
+                var data = {"book_id" : this.selectedBookId, "club_id" : this.clubID, "date" : this.selectedTime};
+                this.saveBook(data);
             } else {
                 this.noSelectedBook = true;
                 bvModalEvt.preventDefault()
             }
         },
+        saveBook(data) {
+            const apiService = new APIClubService();
+            var api = apiService.setBook(data);
+            api.then(result => {
+                if (result.status == 201) {
+                    this.bookSetted = true;
+                    this.getClubs();
+                } else {
+                    this.bookSetted = false;
+                }}).catch(error => {console.log(error), this.bookSetted = false;})
+        },
+
         imageUrlAlt(event) {
             event.target.src = this.images.sample;
         },

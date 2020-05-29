@@ -73,4 +73,11 @@ export class APIClubService {
             headers: headersUpdate
         }).catch( error => { console.log(error); });
     }
+
+    async setBook(data){
+        const url = `${API_URL}/clubs/`;
+        return await axios.put(url, data, {
+            headers: headersUpdate
+        });
+    }
 }

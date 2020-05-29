@@ -5,7 +5,7 @@
             <b-row>
                 <b-col md="8">
                     <b-form-input class="mr-sm-2" placeholder="Search" 
-                        v-on:keypress="searchBooks"
+                        v-on:keypress="keyPressed"
                         v-model="book_name_search">
                     </b-form-input>
                 </b-col>
@@ -18,18 +18,18 @@
             <b-row v-if="filters" class="mt-3">
                 <b-col md="8">
                     <b-form-input class="mr-sm-2" placeholder="Author name" 
-                        v-on:keypress="searchBooks"
+                        v-on:keypress="keyPressed"
                         v-model="book_author_search">
                     </b-form-input>
                     <b-form-input class="mr-sm-2 mt-1" placeholder="Publisher name" 
-                        v-on:keypress="searchBooks"
+                        v-on:keypress="keyPressed"
                         v-model="book_publisher_search">
                     </b-form-input>
                     <b-form-select
                         id="genre-field"
                         v-model="book_genres_search"
                         :options="genres_options"
-                        v-on:change="searchBooks"
+                        v-on:change="keyPressed"
                         size=3
                         class="mt-1"
                     ></b-form-select>
@@ -52,7 +52,7 @@
                 
                 <b-alert class="m-5" variant="danger" show v-if="noBooks">There are no books on the catalogue!</b-alert>
             </b-row>
-            <b-row class="mt-12 justify-content-md-center" v-if="this.items.length != 0">
+            <b-row class="mt-12 justify-content-md-center" v-if="this.items.numBooks > this.limit">
                 <b-col md="2">
                     <b-pagination class="book-pagination"
                         v-model="currentPage"
@@ -73,7 +73,7 @@
   export default {
     data() {
         return {
-            limit : 8,
+            limit : 4,
             noBooks : false,
             imageError : false,
             currentPage: 1,
@@ -115,13 +115,16 @@
                     this.noBooks = true;
                 }}).catch(error => {console.log(error),this.noBooks = true;})
         },
-        searchBooks(){
+        keyPressed() {
+            this.searchBooks(this.limit,this.currentPage);
+        },
+        searchBooks(limit,offset){
             const apiService = new APIBookService();
             if(this.book_name_search == "" && this.book_author_search == ""
                 && this.book_publisher_search == "" && this.book_genres_search == ""){
                 this.getBooks(this.limit,this.currentPage);
             }else{
-                var data = apiService.searchBookByName(this.book_name_search, this.book_author_search,
+                var data = apiService.searchBook(limit,offset-1,this.book_name_search, this.book_author_search,
                                             this.book_publisher_search, this.book_genres_search);
                 data.then(result => {
                 if (result.status == 200) {
@@ -138,7 +141,12 @@
             event.target.src = this.images.sample;
         },
         test() {
-            this.getBooks(this.limit,this.currentPage);
+            if(this.book_name_search == "" && this.book_author_search == ""
+                && this.book_publisher_search == "" && this.book_genres_search == ""){
+                this.getBooks(this.limit,this.currentPage);
+            }else {
+                this.searchBooks(this.limit,this.currentPage)
+            }
         }     
     }
   }

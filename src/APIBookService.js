@@ -62,11 +62,11 @@ export class APIBookService {
     }
 
     ///api/books/search?title={title}&author={author}&genre={genre}&publisher={publisher}
-    async searchBookByName(title, author, publisher, genre) {
-        const url = `${API_URL}/books/search?title=` + title + '&author=' + author
+    async searchBook(limit, offset, title, author, publisher, genre) {
+        const url = `${API_URL}/books/search?limit=` + limit + `&offset=` + offset + `&title=` + title + '&author=' + author
                     + '&genre=' + genre + '&publisher=' + publisher;
         return await axios.get(url, {
-            headers: headers
+            headers: headersUpdate
         }).then((response) => response).catch( error => { console.log(error); });
     }
 

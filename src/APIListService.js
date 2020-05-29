@@ -53,4 +53,11 @@ export class APIListService {
             headers: headersUpdate
         });
     }
+
+    async deleteBookFromList(list_id,book_id) {
+        const url = `${API_URL}/lists/`;
+        return await axios.delete(url + list_id + "?bookId=" + book_id, {
+            headers: headersUpdate
+        }).catch( error => { console.log(error); });
+    }
 }

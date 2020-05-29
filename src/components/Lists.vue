@@ -5,7 +5,7 @@
                 <b-col md="4">
                     <b-list-group>
                         <b-list-group-item >
-                            <b-list-group-item v-for="list in lists" :key="list" @click="getBooks(list.list_name)">{{list.list_name}}</b-list-group-item>
+                            <b-list-group-item v-for="list in lists" :key="list" @click="listId = list.list_id;getBooks(list.list_name)">{{list.list_name}}</b-list-group-item>
                         </b-list-group-item>
                     </b-list-group>
                 </b-col>
@@ -16,6 +16,11 @@
                         <b-table :items="items" :fields="fields" striped responsive="sm" @row-clicked="myRowClickHandler" v-if="!no_books">
                             <template v-slot:cell(options)="row">
                                 <b-img class="book-cover-list" :src="'http://covers.openlibrary.org/b/isbn/'+ row.item.isbn + '-S.jpg?default=false' || image.sample" fluid alt="Responsive image" @error="imageUrlAlt"></b-img>
+                            </template>
+                            <template v-slot:cell(delete)="row">
+                                <b-button variant="danger" pill size="sm" @click="deleteBook(row.item.id)" class="mr-2" ref="btnShow">
+                                    <b-icon icon="trash"></b-icon> Delete book
+                                </b-button>                            
                             </template>
                         </b-table>
                         <b-alert class="m-5" variant="danger" show v-if="no_books">There are no books yet</b-alert>
@@ -33,8 +38,9 @@
     data() {
       return {
         lists: [],
+        listId : 0,
         items: {},
-        fields: ['options', 'title', 'author'],
+        fields: ['options', 'title', 'author','delete'],
         images: {
             sample: require('../assets/missingbook.png')
         },
@@ -74,11 +80,19 @@
             apiService.getList(idUser).then((response) => {
                 if (response.status == 200) {
                     this.lists = response.data;
+                    this.listId = this.lists[0].list_id;
                     this.getBooks(this.lists[0].list_name);
                 } else {
                     alert("error");
                 }}).catch(error => {alert(error);});
-        }
+        },
+        deleteBook(id) {
+            var apiService = new APIListService();
+            apiService.deleteBookFromList(this.listId, id).then((response) => {
+                if (response.status == 200) {
+                    this.getBooks(this.list_name);
+                } }).catch(error => {alert(error);});
+        },
     }
   }
 </script>
