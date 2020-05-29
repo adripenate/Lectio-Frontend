@@ -36,7 +36,7 @@
                 </b-col>
             </b-row>
             <b-row class="mt-10 justify-content-md-center"> 
-                <b-col class="book-element" v-for="book in items.books" :key="book" md="3">
+                <b-col class="book-element" v-for="(book,idx) in items.books" :key="idx" md="3">
                     <b-row class="mt-4 justify-content-md-center" v-on:click="goToBook(book.id)"> 
                         <b-col class="book-element" md="8">
                             <b-img class="book-cover" :src="'http://covers.openlibrary.org/b/isbn/'+ book.isbn + '-L.jpg?default=false' || image.sample" fluid alt="Responsive image" @error="imageUrlAlt"></b-img>
@@ -129,7 +129,7 @@
                 data.then(result => {
                 if (result.status == 200) {
                     this.datos = JSON.stringify(result.data);
-                    this.items.books = result.data;
+                    this.items = result.data;
                     this.noBooks = false;
                 } else {
                     this.items = "";

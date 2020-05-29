@@ -92,7 +92,7 @@
             successUnsuscribed : false,
             error : false,
             book : {"synopsis" : ""},
-            boodId : 0,
+            bookId : 0,
             noClubs : false,
             imageError : false,
             images: {

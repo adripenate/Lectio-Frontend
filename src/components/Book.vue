@@ -21,7 +21,7 @@
             <b-row class="mt-10 justify-content-md-center"> 
                 <b-col class="book-cover" md="4">
                     <div class="mt-4">
-                        <b-button class="list-button" v-b-modal.modal>Add book to list</b-button>
+                        <b-button class="list-button" v-b-modal.modal v-if="role == 'Student'">Add book to list</b-button>
                         <b-alert class="m-5" variant="danger" show v-if="error">The book is already in the list</b-alert>
                         <b-alert class="m-5" variant="success" show v-if="successAdded">Successfully added </b-alert>
                     </div>
@@ -97,12 +97,14 @@
                 list_id: "",
                 book_id: ""
             },
+            role : ""
         }
     },
 
     mounted() {
       this.$emit("authenticated", true);
       this.getBookData(this.$route.params.id);
+      this.role = JSON.parse(localStorage.getItem("userInfo")).role;
     },
 
     methods: {
@@ -125,7 +127,6 @@
             var apiBookService = new APIListService();
             this.request_data.book_id = this.$route.params.id;
             this.request_data.list_id = listID;
-            alert(JSON.stringify(this.request_data));
             apiBookService.addBookTo(JSON.stringify(this.request_data)).then(result => {
                 if (result.status == 201) {
                     this.successAdded = true;

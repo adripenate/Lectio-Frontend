@@ -1,6 +1,6 @@
 <template>
     <b-container>
-        <b-row v-for="review in items.reviews" :key="review">
+        <b-row v-for="(review, idx) in items.reviews" :key="idx">
             <b-col>
                 <b-card>
                     <b-media>
@@ -34,13 +34,13 @@
             
         </b-row>
 
-        <b-row v-if="this.items.length == 0 || this.items.reviews.length == 0">
+        <b-row v-if="this.items == null || this.items.reviews == null || this.items.reviews.length == 0">
             <b-col md="12">
                 <b-alert show variant="warning" class="center">There are no reviews for this book yet</b-alert>
             </b-col>
         </b-row>
 
-        <b-row class="mt-12 justify-content-md-center" v-if="this.items.length != 0 && this.items.numReviews > 8">
+        <b-row class="mt-12 justify-content-md-center" v-if="this.items != null && this.items.size >  0 && (this.items.reviews.length != 0 && this.items.numReviews > 8)">
                 <b-col md="2">
                     <b-pagination class="book-pagination"
                         v-model="currentPage"

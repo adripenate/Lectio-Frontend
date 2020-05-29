@@ -9,7 +9,7 @@
                     :current-page="currentPage"
                     small 
                     :fields="fields"
-                    striped responsive="sm" @row-clicked="myRowClickHandler" v-if="!noClubs">
+                    striped responsive="sm" v-if="!noClubs">
                 <template v-slot:cell(book_id)="row">
                     <b-button v-if="row.item.book_id != null" variant="success" pill size="sm" @click="getBookAndShowModal(row.item, row.index, $event.target)" class="mr-2" ref="btnShow">
                         <b-icon icon="book"></b-icon> See book
@@ -89,7 +89,7 @@
             successUnsuscribed : false,
             error : false,
             book : {"synopsis" : ""},
-            boodId : 0,
+            bookId : 0,
             noClubs : false,
             imageError : false,
             images: {

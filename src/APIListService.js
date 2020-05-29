@@ -60,4 +60,13 @@ export class APIListService {
             headers: headersUpdate
         }).catch( error => { console.log(error); });
     }
+
+    async progress(data){
+        const url = `${API_URL}/books/progress`;
+        return await axios.post(url, data, {
+            headers: headersUpdate
+        });
+    }
+
+
 }

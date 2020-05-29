@@ -118,7 +118,7 @@
           publisher: "",
           pages: "",
           isbn: "",
-          genres: null,
+          genres: [],
           synopsis: ""
         },
         datos: "",
